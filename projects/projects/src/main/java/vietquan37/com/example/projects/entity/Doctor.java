@@ -1,0 +1,30 @@
+package vietquan37.com.example.projects.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class Doctor {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String specialty;
+    @OneToOne
+    private User user;
+    private LocalDateTime start_time;
+    private LocalDateTime end_time;
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<Appointment> appointments;
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<HospitalizedPet> hospitalizations;
+}
