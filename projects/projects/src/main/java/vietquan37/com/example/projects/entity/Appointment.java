@@ -3,7 +3,9 @@ package vietquan37.com.example.projects.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
+import vietquan37.com.example.projects.enumClass.AppointmentType;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +32,8 @@ public class Appointment {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     private AppointmentStatus appointmentStatus;
+    private AppointmentType type;
+    private BigDecimal appointmentPrice;
     private  double advance_payment;
     private double refund_payments;
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)

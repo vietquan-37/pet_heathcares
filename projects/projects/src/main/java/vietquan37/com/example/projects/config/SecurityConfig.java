@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-    public static final String API_V_1_AUTH = "/api/v1/auth/**";
+    public static final String API_V_1_AUTH = "/api/v1/user/**";
     private final JwtFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 

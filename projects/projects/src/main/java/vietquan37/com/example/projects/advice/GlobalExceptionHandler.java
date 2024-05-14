@@ -1,4 +1,5 @@
 package vietquan37.com.example.projects.advice;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,12 +41,19 @@ public class GlobalExceptionHandler {
                 .error("User account is locked")
                 .build());
     }
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<APIResponse> handleNotFoundException(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(ex.getMessage())
+                .build());
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Internal server error")
+                .error(ex.getMessage())
                 .build());
     }
 }

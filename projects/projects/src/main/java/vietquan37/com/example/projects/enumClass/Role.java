@@ -11,7 +11,7 @@ public enum Role {
     ADMIN,
     USER,
     STAFF,
-    VETERINARIAN;
+    DOCTOR;
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return authorities;

@@ -43,8 +43,7 @@ public class AuthService implements IAuthService {
         if (userRepository.findByEmail(registerDTO.getUsername()).isPresent()) {
             throw new EmailAlreadyExistsException("Email address already registered");
         }
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
+
         userRepository.save(user);
         String token = generateAndSaveVerifyToken(user);
         var customer = new Customer();
