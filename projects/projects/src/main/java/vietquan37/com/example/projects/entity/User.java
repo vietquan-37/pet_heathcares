@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private Integer id;
     private String fullName;
     @Enumerated(EnumType.STRING)
-    private Role user_role;
+    private Role role;
     @Column(
             unique = true
     )
@@ -40,7 +40,7 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user_role.getAuthorities();
+        return role.getAuthorities();
     }
 
     @Override

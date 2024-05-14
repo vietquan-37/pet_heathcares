@@ -21,15 +21,16 @@ public class UserController {
     private final IUserService UserService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('STAFF','ADMIN')")
-    public ResponseEntity<APIResponse> GetAllUsers() {
-        var response = UserService.getAllUser();
+  @PreAuthorize("hasAnyRole('STAFF','ADMIN')")
+    public ResponseEntity<APIResponse> GetAllUsers(@RequestParam(defaultValue = "0")int page) {
+        var response = UserService.getAllUser(page);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
 
 
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> CreateUser(@RequestBody @Valid UserDTO dto) throws EmailAlreadyExistsException {
         UserService.createUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.builder()
@@ -39,11 +40,23 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid UserDTO dto, @PathVariable Integer id) throws EmailAlreadyExistsException {
         UserService.UpdateUser(dto, id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())
                 .data("User updated successfully.")
                 .build());
+    }
+    @PatchMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<APIResponse> DeleteUser(@PathVariable Integer id) {
+        UserService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data("User deleted successfully.")
+                .build());
+
+
     }
 }

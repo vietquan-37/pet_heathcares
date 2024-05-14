@@ -24,6 +24,7 @@ public interface UserMapper {
     @Mapping(target = "fullName", source = "fullName")
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "accountLocked", constant = "true")
+    @Mapping(target = "role",constant = "USER")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
@@ -31,7 +32,7 @@ public interface UserMapper {
 
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "role", source = "user_role")
+    @Mapping(target = "role", source = "role")
     @Mapping(target = "name", source = "fullName")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "password", source = "password")
@@ -43,7 +44,7 @@ public interface UserMapper {
     List<UserResponse> mapUsersToUserResponses(List<User> users);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user_role", source = "role")
+    @Mapping(target = "role", source = "role")
     @Mapping(target = "email", source = "username")
     @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
     @Mapping(target = "telephoneNumber", source = "phone")

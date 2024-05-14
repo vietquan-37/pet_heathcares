@@ -6,6 +6,7 @@ import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import vietquan37.com.example.projects.entity.User;
+import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
@@ -36,6 +37,7 @@ public class UserMapperImpl implements UserMapper {
         user.address( dto.getAddress() );
 
         user.accountLocked( true );
+        user.role( Role.USER );
         user.createdAt( java.time.LocalDateTime.now() );
         user.updatedAt( java.time.LocalDateTime.now() );
 
@@ -51,7 +53,7 @@ public class UserMapperImpl implements UserMapper {
         UserResponse.UserResponseBuilder userResponse = UserResponse.builder();
 
         userResponse.id( user.getId() );
-        userResponse.role( user.getUser_role() );
+        userResponse.role( user.getRole() );
         userResponse.name( user.getFullName() );
         userResponse.email( user.getEmail() );
         userResponse.password( user.getPassword() );
@@ -84,7 +86,7 @@ public class UserMapperImpl implements UserMapper {
 
         User.UserBuilder user = User.builder();
 
-        user.user_role( dto.getRole() );
+        user.role( dto.getRole() );
         user.email( dto.getUsername() );
         user.password( passwordEncoderMapper.encode( dto.getPassword() ) );
         user.telephoneNumber( dto.getPhone() );
@@ -110,6 +112,7 @@ public class UserMapperImpl implements UserMapper {
         existingUser.setTelephoneNumber( dto.getPhone() );
         existingUser.setAccountLocked( dto.isEnabled() );
         existingUser.setFullName( dto.getFullName() );
+        existingUser.setRole( dto.getRole() );
 
         existingUser.setUpdatedAt( java.time.LocalDateTime.now() );
 

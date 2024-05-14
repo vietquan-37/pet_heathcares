@@ -2,6 +2,9 @@ package vietquan37.com.example.projects.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Doctor;
@@ -17,6 +20,7 @@ import vietquan37.com.example.projects.repository.UserRepository;
 import vietquan37.com.example.projects.service.IUserService;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +31,7 @@ public class UserService implements IUserService {
     private final UserMapper userMapper;
     private final CustomerRepository customerRepository;
     private final DoctorRepository doctorRepository;
-
+private final int MAX=2;
 
     @Override
     public void createUser(UserDTO dto) throws EmailAlreadyExistsException {
@@ -53,6 +57,18 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public void deleteUser(Integer id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+        User user = optionalUser.get();
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setAccountLocked(true);
+        userRepository.save(user);
+    }
+
+    @Override
     public void UpdateUser(UserDTO dto, Integer id) throws EntityNotFoundException, EmailAlreadyExistsException {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
@@ -72,8 +88,13 @@ public class UserService implements IUserService {
 
 
     @Override
-    public List<UserResponse> getAllUser() {
-        var user = userRepository.findAll();
-        return userMapper.mapUsersToUserResponses(user);
+    public Page<UserResponse> getAllUser(int page) {
+        if (page < 0) {
+            page = 0;
+        }
+        Pageable pageable = PageRequest.of(page, MAX);
+        Page<User> userPage = userRepository.findAllByRoleIn(List.of(Role.USER, Role.DOCTOR, Role.STAFF), pageable);
+        return userPage.map(userMapper::mapUserToUserResponse);
     }
+
 }
