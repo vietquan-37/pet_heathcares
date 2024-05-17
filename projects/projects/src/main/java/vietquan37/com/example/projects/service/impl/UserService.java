@@ -31,7 +31,7 @@ public class UserService implements IUserService {
     private final UserMapper userMapper;
     private final CustomerRepository customerRepository;
     private final DoctorRepository doctorRepository;
-private final int MAX=2;
+private final int MAX=5;
 
     @Override
     public void createUser(UserDTO dto) throws EmailAlreadyExistsException {
@@ -49,6 +49,7 @@ private final int MAX=2;
                 doctorRepository.save(doctor);
             } else if (dto.getRole() == Role.USER) {
                 Customer customer = new Customer();
+                customer.setCustomer_balance(0);
                 customer.setUser(user);
                 customerRepository.save(customer);
             }
@@ -74,10 +75,7 @@ private final int MAX=2;
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("User not found");
         }
-
         User existingUser = optionalUser.get();
-
-        // Check if the email is already associated with another user
         if (!existingUser.getEmail().equals(dto.getUsername()) && userRepository.findByEmail(dto.getUsername()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already exists");
         }

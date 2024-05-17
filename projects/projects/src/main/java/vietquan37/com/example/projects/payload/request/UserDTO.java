@@ -5,9 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import vietquan37.com.example.projects.enumClass.Role;
 
 @Data
+@NoArgsConstructor
 public class UserDTO {
 
     @NotBlank
@@ -25,4 +28,5 @@ public class UserDTO {
     private String address;
     private Role role;
     private boolean enabled;
+
 }

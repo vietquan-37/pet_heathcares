@@ -5,7 +5,7 @@ import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
 
-import java.util.List;
+
 
 public interface IUserService {
 Page<UserResponse> getAllUser(int page);

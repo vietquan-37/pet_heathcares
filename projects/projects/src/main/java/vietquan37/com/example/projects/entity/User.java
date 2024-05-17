@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import vietquan37.com.example.projects.enumClass.Role;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -21,7 +22,7 @@ import java.util.Collection;
 )
 @Entity
 @Builder
-public class User implements UserDetails {
+public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -71,5 +72,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    @Override
+    public String getName() {
+        return email;
     }
 }

@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import vietquan37.com.example.projects.enumClass.Role;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class UserResponse {
@@ -15,5 +17,7 @@ public class UserResponse {
     private String address;
     private boolean isDeleted;
     private Role role;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }

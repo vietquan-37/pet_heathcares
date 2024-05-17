@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vietquan37.com.example.projects.enumClass.WorkingDay;
+import vietquan37.com.example.projects.utils.converter.WorkingDayListConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,4 +29,6 @@ public class Doctor {
     private List<Appointment> appointments;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<HospitalizedPet> hospitalizations;
+    @Convert(converter = WorkingDayListConverter.class)
+    private List<WorkingDay> workingDay;
 }

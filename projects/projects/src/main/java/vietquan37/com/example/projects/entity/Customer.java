@@ -25,6 +25,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private List<Review> reviews;
     private double customer_balance;
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
+    private List<Appointment> appointments;
 
 
 }

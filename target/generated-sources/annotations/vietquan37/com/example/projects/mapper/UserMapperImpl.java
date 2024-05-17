@@ -1,7 +1,5 @@
 package vietquan37.com.example.projects.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,22 +58,10 @@ public class UserMapperImpl implements UserMapper {
         userResponse.phoneNumber( user.getTelephoneNumber() );
         userResponse.address( user.getAddress() );
         userResponse.isDeleted( user.isAccountLocked() );
+        userResponse.createdAt( user.getCreatedAt() );
+        userResponse.updatedAt( user.getUpdatedAt() );
 
         return userResponse.build();
-    }
-
-    @Override
-    public List<UserResponse> mapUsersToUserResponses(List<User> users) {
-        if ( users == null ) {
-            return null;
-        }
-
-        List<UserResponse> list = new ArrayList<UserResponse>( users.size() );
-        for ( User user : users ) {
-            list.add( mapUserToUserResponse( user ) );
-        }
-
-        return list;
     }
 
     @Override

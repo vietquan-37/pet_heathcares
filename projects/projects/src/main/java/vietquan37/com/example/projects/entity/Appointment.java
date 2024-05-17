@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.enumClass.AppointmentType;
+import vietquan37.com.example.projects.utils.converter.AppointmentTypeConverter;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,18 +28,22 @@ public class Appointment {
     private boolean deleted;
     private LocalDateTime appointmentTime;
     @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+    @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
     @ManyToOne
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     private AppointmentStatus appointmentStatus;
-    private AppointmentType type;
     private BigDecimal appointmentPrice;
-    private  double advance_payment;
-    private double refund_payments;
+    private BigDecimal refund_payments;
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
     private List<Review> reviews;
+    private boolean paidStatus;
+    @Convert(converter = AppointmentTypeConverter.class)
+    private List<AppointmentType> appointmentTypes;
 
 
 }

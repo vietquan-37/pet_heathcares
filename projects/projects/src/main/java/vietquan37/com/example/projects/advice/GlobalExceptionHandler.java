@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
+import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 
 import java.util.HashMap;
@@ -48,6 +49,14 @@ public class GlobalExceptionHandler {
                 .error(ex.getMessage())
                 .build());
     }
+    @ExceptionHandler(OperationNotPermittedException.class)
+    public ResponseEntity<APIResponse> handleOperationNotPermittedException(OperationNotPermittedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(APIResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(ex.getMessage())
+                .build());
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIResponse> handleGenericException(Exception ex) {

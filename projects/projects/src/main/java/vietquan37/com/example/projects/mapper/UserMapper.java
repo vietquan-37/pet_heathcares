@@ -1,12 +1,11 @@
 package vietquan37.com.example.projects.mapper;
 
-import lombok.Builder;
-import lombok.Data;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import vietquan37.com.example.projects.entity.User;
-import vietquan37.com.example.projects.enumClass.Role;
+
 import vietquan37.com.example.projects.mapper.passwordMap.EncodedMapping;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
@@ -39,11 +38,13 @@ public interface UserMapper {
     @Mapping(target = "phoneNumber", source = "telephoneNumber")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "isDeleted", source = "accountLocked")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     UserResponse mapUserToUserResponse(User user);
 
-    List<UserResponse> mapUsersToUserResponses(List<User> users);
 
-    @Mapping(target = "id", ignore = true)
+
+
     @Mapping(target = "role", source = "role")
     @Mapping(target = "email", source = "username")
     @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
@@ -61,5 +62,6 @@ public interface UserMapper {
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "accountLocked", source = "enabled")
+
     User updateUserFromDto(UserDTO dto, @MappingTarget User existingUser);
 }
