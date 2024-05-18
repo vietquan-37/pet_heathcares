@@ -1,5 +1,9 @@
 package vietquan37.com.example.projects.advice;
+
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +39,7 @@ public class GlobalExceptionHandler {
                 .error(errors)
                 .build());
     }
+
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<APIResponse> handleLockedException(LockedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(APIResponse.builder()
@@ -42,6 +47,7 @@ public class GlobalExceptionHandler {
                 .error("User account is locked")
                 .build());
     }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<APIResponse> handleNotFoundException(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponse.builder()
@@ -49,6 +55,7 @@ public class GlobalExceptionHandler {
                 .error(ex.getMessage())
                 .build());
     }
+
     @ExceptionHandler(OperationNotPermittedException.class)
     public ResponseEntity<APIResponse> handleOperationNotPermittedException(OperationNotPermittedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(APIResponse.builder()
@@ -58,11 +65,35 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<APIResponse> handleExpiredJwtException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(APIResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("JWT token has expired")
+                .build());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIResponse> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponse.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error(ex.getMessage())
+                .error(ex.getClass().getName() + ": " + ex.getMessage())
                 .build());
     }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<APIResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(APIResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("Access Denied")
+                .build());
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<APIResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(APIResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error("Invalid username or password")
+                .build());
+    }
+
 }

@@ -27,7 +27,6 @@ public class PetMapperImpl implements PetMapper {
         pet.species( dto.getSpecies() );
         pet.gender( dto.getGender() );
         pet.birthDate( dto.getBirthDate() );
-        pet.imageUrl( dto.getImageUrl() );
 
         pet.updatedAt( java.time.LocalDateTime.now() );
         pet.createdAt( java.time.LocalDateTime.now() );
@@ -68,7 +67,6 @@ public class PetMapperImpl implements PetMapper {
         existingPet.setSpecies( dto.getSpecies() );
         existingPet.setGender( dto.getGender() );
         existingPet.setBirthDate( dto.getBirthDate() );
-        existingPet.setImageUrl( dto.getImageUrl() );
 
         existingPet.setUpdatedAt( java.time.LocalDateTime.now() );
 

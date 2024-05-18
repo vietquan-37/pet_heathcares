@@ -1,7 +1,6 @@
 package vietquan37.com.example.projects.controller;
 
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.payload.request.LoginDTO;
+import vietquan37.com.example.projects.payload.request.RefreshTokenDTO;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IAuthService;
@@ -42,5 +42,12 @@ public class AuthController {
     public ResponseEntity<APIResponse> authenticate(@RequestBody @Valid LoginDTO request){
        var result= authService.authenticate(request);
        return  ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value()).data(result).build());
+    }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<APIResponse> refreshToken(
+          @Valid  @RequestBody RefreshTokenDTO request
+    ) {
+       return ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value())
+               .data(authService.refreshToken(request)).build());
     }
 }

@@ -12,6 +12,7 @@ import vietquan37.com.example.projects.entity.VerificationToken;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.mapper.UserMapper;
 import vietquan37.com.example.projects.payload.request.LoginDTO;
+import vietquan37.com.example.projects.payload.request.RefreshTokenDTO;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
 import vietquan37.com.example.projects.payload.response.AuthenticationResponse;
 import vietquan37.com.example.projects.repository.CustomerRepository;
@@ -94,4 +95,13 @@ public class AuthService implements IAuthService {
         tokenRepository.save(token);
         return generatedToken;
     }
+
+    @Override
+    public AuthenticationResponse refreshToken(RefreshTokenDTO dto) {
+        String userEmail = jwtService.extractUsername(dto.getToken());
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        var accessToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder().userId(user.getId()).accessToken(accessToken).refreshToken(dto.getToken()).build();
+    }
+
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.enumClass.Gender;
 
 import java.util.Date;
@@ -25,7 +26,7 @@ public class PetDTO {
     @NotNull
     private Date birthDate;
 
-    private String imageUrl;
+    private MultipartFile image;
 
 
 }

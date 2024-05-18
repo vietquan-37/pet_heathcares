@@ -22,6 +22,7 @@ import vietquan37.com.example.projects.repository.PetRepository;
 
 import vietquan37.com.example.projects.service.IPetService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -37,11 +38,12 @@ public class PetService implements IPetService {
     private final int MAX = 5;
 
     @Override
-    public void CreatePet(PetDTO dto, Authentication connectedUser)  {
+    public void CreatePet(PetDTO dto, Authentication connectedUser) {
 
         User user = ((User) connectedUser.getPrincipal());
         Pet pet = mapper.mapDto(dto);
         Customer customer = customerRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
         pet.setCustomer(customer);
         petRepository.save(pet);
     }
