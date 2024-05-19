@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import vietquan37.com.example.projects.config.CloudinaryService;
 import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Pet;
 
@@ -32,17 +33,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PetService implements IPetService {
     private final CustomerRepository customerRepository;
-
+private final CloudinaryService cloudinaryService;
     private final PetRepository petRepository;
     private final PetMapper mapper;
     private final int MAX = 5;
 
     @Override
-    public void CreatePet(PetDTO dto, Authentication connectedUser) {
-
-        User user = ((User) connectedUser.getPrincipal());
+    public void CreatePet(PetDTO dto, Authentication connectedUser) throws IOException {
+        User user = (User) connectedUser.getPrincipal();
         Pet pet = mapper.mapDto(dto);
-        Customer customer = customerRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        Customer customer = customerRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(dto.getImage());
+            pet.setImageUrl(imageUrl);
+        }
 
         pet.setCustomer(customer);
         petRepository.save(pet);

@@ -62,6 +62,5 @@ public interface UserMapper {
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "accountLocked", source = "enabled")
-
     User updateUserFromDto(UserDTO dto, @MappingTarget User existingUser);
 }

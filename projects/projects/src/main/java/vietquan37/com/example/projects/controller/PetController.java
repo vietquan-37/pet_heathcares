@@ -13,6 +13,8 @@ import vietquan37.com.example.projects.payload.request.PetDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IPetService;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("api/v1/pet")
 @RequiredArgsConstructor
@@ -22,10 +24,10 @@ public class PetController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> create(@RequestBody PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException {
-        petService.CreatePet(dto,connectedUser);
-        return ResponseEntity.status(HttpStatus.CREATED).
-                body(APIResponse.builder().status(HttpStatus.CREATED.value())
+    public ResponseEntity<APIResponse> create(@Valid @ModelAttribute PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException, IOException {
+        petService.CreatePet(dto, connectedUser);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(APIResponse.builder().status(HttpStatus.CREATED.value())
                         .data("Pet created successfully").build());
     }
 

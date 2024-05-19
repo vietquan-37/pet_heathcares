@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.enumClass.Gender;
 
@@ -24,9 +25,9 @@ public class PetDTO {
     private Gender gender;
 
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
     private MultipartFile image;
-
 
 }
