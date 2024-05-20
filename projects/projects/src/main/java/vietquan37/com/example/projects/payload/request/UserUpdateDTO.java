@@ -6,13 +6,10 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import vietquan37.com.example.projects.enumClass.Role;
 
 @Data
 @NoArgsConstructor
-public class UserDTO {
-
+public class UserUpdateDTO {
     @NotBlank
     private String fullName;
     @Email
@@ -26,7 +23,5 @@ public class UserDTO {
     private String phone;
     @NotBlank
     private String address;
-    @NotBlank
-    private Role role;
-
+    private boolean enabled;
 }

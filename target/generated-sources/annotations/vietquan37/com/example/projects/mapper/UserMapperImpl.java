@@ -8,6 +8,7 @@ import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
+import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
 
 @Generated(
@@ -87,7 +88,7 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User updateUserFromDto(UserDTO dto, User existingUser) {
+    public User updateUserFromDto(UserUpdateDTO dto, User existingUser) {
         if ( dto == null ) {
             return existingUser;
         }
@@ -98,7 +99,6 @@ public class UserMapperImpl implements UserMapper {
         existingUser.setTelephoneNumber( dto.getPhone() );
         existingUser.setAccountLocked( dto.isEnabled() );
         existingUser.setFullName( dto.getFullName() );
-        existingUser.setRole( dto.getRole() );
 
         existingUser.setUpdatedAt( java.time.LocalDateTime.now() );
 

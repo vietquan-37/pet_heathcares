@@ -9,6 +9,7 @@ import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Pet;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -16,5 +17,6 @@ public interface PetRepository extends JpaRepository<Pet, Integer>, PagingAndSor
 
     Page<Pet> findAllByDeletedIsFalse(Pageable pageable);
     List<Pet>findAllByCustomerAndDeletedIsFalse(Customer customer);
+   Optional<Pet>findByIdAndDeletedIsFalse(Integer petId);
 
 }

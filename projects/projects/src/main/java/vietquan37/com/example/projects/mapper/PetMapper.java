@@ -27,12 +27,23 @@ public interface PetMapper {
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "deleted", source = "deleted")
     @Mapping(target = "ownerName", source = "customer.user.fullName")
+    @Mapping(target = "imageUrl", source = "imageUrl")
     PetResponse mapToPetResponse(Pet pet);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "species", source = "species")
+    @Mapping(target = "gender", source = "gender")
+    @Mapping(source = "birthDate", target = "birthDate", dateFormat = "yyyy-MM-dd")
+    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "deleted", source = "deleted")
+    @Mapping(target = "imageUrl", source = "imageUrl")
+    PetResponse mapToPetResponseForUser(Pet pet);
 
     @Mapping(target = "name", source = "name")
     @Mapping(target = "species", source = "species")
     @Mapping(target = "gender", source = "gender")
     @Mapping(source = "birthDate", target = "birthDate", dateFormat = "yyyy-MM-dd")
-    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())" )
     Pet mapUpdateDto(PetDTO dto, @MappingTarget Pet existingPet);
 }

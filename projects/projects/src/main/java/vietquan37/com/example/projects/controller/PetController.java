@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import vietquan37.com.example.projects.exception.FileException;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.payload.request.PetDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
@@ -24,7 +25,7 @@ public class PetController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> create(@Valid @ModelAttribute PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException, IOException {
+    public ResponseEntity<APIResponse> create(@Valid @ModelAttribute PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException, IOException, FileException {
         petService.CreatePet(dto, connectedUser);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(APIResponse.builder().status(HttpStatus.CREATED.value())
@@ -47,9 +48,17 @@ public class PetController {
                 .ok(APIResponse.builder().data(response)
                         .status(HttpStatus.OK.value()).build());
     }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<APIResponse> getUserPetById(@PathVariable Integer id, Authentication connectedUser) throws OperationNotPermittedException {
+        var response=petService.GetUserPetById(id,connectedUser);
+        return ResponseEntity
+                .ok(APIResponse.builder().data(response)
+                        .status(HttpStatus.OK.value()).build());
+    }
     @PutMapping("/update/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> UpdatePet(@PathVariable Integer petId, @Valid @RequestBody PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> UpdatePet(@PathVariable Integer petId, @Valid @ModelAttribute PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException, IOException, FileException {
         petService.UpdatePet(petId,dto,connectedUser);
         return ResponseEntity.ok( APIResponse.builder().status(HttpStatus.OK.value())
                 .data("Pet updated successfully").build());

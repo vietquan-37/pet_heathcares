@@ -13,6 +13,8 @@ import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Pet;
 
 import vietquan37.com.example.projects.entity.User;
+import vietquan37.com.example.projects.enumClass.Role;
+import vietquan37.com.example.projects.exception.FileException;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.mapper.PetMapper;
 
@@ -39,7 +41,7 @@ private final CloudinaryService cloudinaryService;
     private final int MAX = 5;
 
     @Override
-    public void CreatePet(PetDTO dto, Authentication connectedUser) throws IOException {
+    public void CreatePet(PetDTO dto, Authentication connectedUser) throws IOException, FileException {
         User user = (User) connectedUser.getPrincipal();
         Pet pet = mapper.mapDto(dto);
         Customer customer = customerRepository.findByUser_Id(user.getId())
@@ -73,29 +75,47 @@ private final CloudinaryService cloudinaryService;
         List<Pet> pets = petRepository.findAllByCustomerAndDeletedIsFalse(customer);
 
         return pets.stream()
-                .map(mapper::mapToPetResponse)
+                .map(mapper::mapToPetResponseForUser)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void UpdatePet(Integer id, PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException {
-        Pet pet = petRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pet not found"));
+    public PetResponse GetUserPetById(Integer id, Authentication connectedUser) throws OperationNotPermittedException {
+        Pet pet = petRepository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("Pet not found"));
         User user = ((User) connectedUser.getPrincipal());
-        if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())) {
-            throw new OperationNotPermittedException("You are not allow to update that pet");
+        if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())&&user.getRole()!= Role.ADMIN) {
+            throw new OperationNotPermittedException("You are not allowed to view that pet");
         }
-       mapper.mapUpdateDto(dto,pet);
-        petRepository.save(pet);
+        return mapper.mapToPetResponseForUser(pet);
     }
 
     @Override
-    public void DeletePet(Integer id, Authentication connectedUser) throws OperationNotPermittedException {
+    public void UpdatePet(Integer id, PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException, IOException, FileException {
         Pet pet = petRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pet not found"));
         User user = ((User) connectedUser.getPrincipal());
         if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())) {
-            throw new OperationNotPermittedException("You are not allow to delete that pet");
+            throw new OperationNotPermittedException("You are not allowed to update that pet");
         }
-        pet.setDeleted(true);
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(dto.getImage());
+            if (pet.getImageUrl() != null && !pet.getImageUrl().isEmpty()) {
+                cloudinaryService.deleteFile(pet.getImageUrl());
+            }
+            pet.setImageUrl(imageUrl);
+        }
+        mapper.mapUpdateDto(dto, pet);
         petRepository.save(pet);
     }
+
+
+    @Override
+        public void DeletePet(Integer id, Authentication connectedUser) throws OperationNotPermittedException {
+            Pet pet = petRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pet not found"));
+            User user = ((User) connectedUser.getPrincipal());
+            if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())) {
+                throw new OperationNotPermittedException("You are not allow to delete that pet");
+            }
+            pet.setDeleted(true);
+            petRepository.save(pet);
+        }
 }

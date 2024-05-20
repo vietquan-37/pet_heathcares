@@ -2,17 +2,13 @@ package vietquan37.com.example.projects.entity;
 
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vietquan37.com.example.projects.enumClass.TokenType;
 
 import java.time.LocalDateTime;
 
@@ -22,12 +18,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class VerificationToken {
+public class Token {
     @Id
     @GeneratedValue
     private Integer id;
     @Column(unique = true)
     private String token;
+    @Enumerated(EnumType.STRING)
+    private TokenType type;
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
     @ManyToOne

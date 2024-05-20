@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.payload.request.UserDTO;
+import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IUserService;
 
@@ -21,9 +22,17 @@ public class UserController {
     private final IUserService UserService;
 
     @GetMapping
-  @PreAuthorize("hasAnyRole('STAFF','ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> GetAllUsers(@RequestParam(defaultValue = "0")int page) {
         var response = UserService.getAllUser(page);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
+
+
+    }
+    @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<APIResponse> GetAllUsers(@PathVariable Integer id) {
+        var response = UserService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
 
 
@@ -40,8 +49,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid UserDTO dto, @PathVariable Integer id) throws EmailAlreadyExistsException {
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid UserUpdateDTO dto, @PathVariable Integer id) throws EmailAlreadyExistsException {
         UserService.UpdateUser(dto, id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

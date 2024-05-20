@@ -8,11 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import vietquan37.com.example.projects.config.JwtService;
-import vietquan37.com.example.projects.entity.User;
-import vietquan37.com.example.projects.entity.VerificationToken;
-import vietquan37.com.example.projects.payload.request.RegisterDTO;
-import vietquan37.com.example.projects.repository.VerificationTokenRepository;
 
 import java.io.UnsupportedEncodingException;
 
@@ -37,4 +32,25 @@ public class EmailService {
         messageHelper.setText(mailContent, true);
         mailSender.send(message);
     }
+    @Async
+    public void sendResetPasswordEmail(String url, String username) throws MessagingException, UnsupportedEncodingException {
+
+        String subject = "Reset Password";
+        String senderName = "User Registration Portal Service";
+        String mailContent = "<p> Hi, " + username + ", </p>" +
+                "<p>We received a request to reset your password. " +
+                "Please, follow the link below to reset your password.</p>" +
+                "<a href=\"" + url + "\">Reset your password</a>" +
+                "<p>If you did not request a password reset, please ignore this email or contact support if you have questions.</p>" +
+                "<p> Thank you <br> User Registration Portal Service</p>";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        var messageHelper = new MimeMessageHelper(message);
+        messageHelper.setFrom("bubakush20099@gmail.com", senderName);
+        messageHelper.setTo(username);
+        messageHelper.setSubject(subject);
+        messageHelper.setText(mailContent, true);
+        mailSender.send(message);
+    }
+
 }

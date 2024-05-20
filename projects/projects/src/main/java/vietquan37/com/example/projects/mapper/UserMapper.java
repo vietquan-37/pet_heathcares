@@ -10,6 +10,7 @@ import vietquan37.com.example.projects.mapper.passwordMap.EncodedMapping;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
+import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
 
 import java.util.List;
@@ -62,5 +63,5 @@ public interface UserMapper {
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "accountLocked", source = "enabled")
-    User updateUserFromDto(UserDTO dto, @MappingTarget User existingUser);
+    User updateUserFromDto(UserUpdateDTO dto, @MappingTarget User existingUser);
 }

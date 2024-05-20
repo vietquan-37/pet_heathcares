@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import vietquan37.com.example.projects.repository.VerificationTokenRepository;
 
 import java.security.Key;
 import java.util.*;

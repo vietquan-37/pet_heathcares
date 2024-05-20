@@ -58,6 +58,27 @@ public class PetMapperImpl implements PetMapper {
     }
 
     @Override
+    public PetResponse mapToPetResponseForUser(Pet pet) {
+        if ( pet == null ) {
+            return null;
+        }
+
+        PetResponse.PetResponseBuilder petResponse = PetResponse.builder();
+
+        petResponse.id( pet.getId() );
+        petResponse.name( pet.getName() );
+        petResponse.species( pet.getSpecies() );
+        petResponse.gender( pet.getGender() );
+        petResponse.birthDate( pet.getBirthDate() );
+        petResponse.updatedAt( pet.getUpdatedAt() );
+        petResponse.createdAt( pet.getCreatedAt() );
+        petResponse.deleted( pet.isDeleted() );
+        petResponse.imageUrl( pet.getImageUrl() );
+
+        return petResponse.build();
+    }
+
+    @Override
     public Pet mapUpdateDto(PetDTO dto, Pet existingPet) {
         if ( dto == null ) {
             return existingPet;

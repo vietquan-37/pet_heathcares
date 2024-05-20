@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Doctor;
@@ -13,6 +14,7 @@ import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.mapper.UserMapper;
 import vietquan37.com.example.projects.payload.request.UserDTO;
+import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
 import vietquan37.com.example.projects.repository.CustomerRepository;
 import vietquan37.com.example.projects.repository.DoctorRepository;
@@ -59,28 +61,27 @@ private final int MAX=5;
 
     @Override
     public void deleteUser(Integer id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        User user = optionalUser.get();
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         user.setUpdatedAt(LocalDateTime.now());
         user.setAccountLocked(true);
         userRepository.save(user);
     }
 
     @Override
-    public void UpdateUser(UserDTO dto, Integer id) throws EntityNotFoundException, EmailAlreadyExistsException {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        User existingUser = optionalUser.get();
-        if (!existingUser.getEmail().equals(dto.getUsername()) && userRepository.findByEmail(dto.getUsername()).isPresent()) {
+    public UserResponse getUserById(Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userMapper.mapUserToUserResponse(user);
+    }
+
+    @Override
+    public void UpdateUser(UserUpdateDTO dto, Integer id) throws EntityNotFoundException, EmailAlreadyExistsException {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        if (!user.getEmail().equals(dto.getUsername()) && userRepository.findByEmail(dto.getUsername()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already exists");
         }
-       userMapper.updateUserFromDto(dto,existingUser);
-        userRepository.save(existingUser);
+       userMapper.updateUserFromDto(dto,user);
+        userRepository.save(user);
     }
 
 

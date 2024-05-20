@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.server.ResponseStatusException;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
+import vietquan37.com.example.projects.exception.FileException;
+import vietquan37.com.example.projects.exception.MisMatchPassword;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 
@@ -45,6 +48,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(APIResponse.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error("User account is locked")
+                .build());
+    }
+    @ExceptionHandler(FileException.class)
+    public ResponseEntity<APIResponse> handleFile(FileException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(ex.getMessage())
                 .build());
     }
 
@@ -86,6 +96,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(APIResponse.builder()
                 .status(HttpStatus.FORBIDDEN.value())
                 .error("Access Denied")
+                .build());
+    }
+    @ExceptionHandler(MisMatchPassword.class)
+    public ResponseEntity<APIResponse> handleMisMatchPassword(MisMatchPassword ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(ex.getMessage())
                 .build());
     }
     @ExceptionHandler(BadCredentialsException.class)

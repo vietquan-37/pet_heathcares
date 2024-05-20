@@ -7,9 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
-import vietquan37.com.example.projects.payload.request.LoginDTO;
-import vietquan37.com.example.projects.payload.request.RefreshTokenDTO;
-import vietquan37.com.example.projects.payload.request.RegisterDTO;
+import vietquan37.com.example.projects.exception.MisMatchPassword;
+import vietquan37.com.example.projects.payload.request.*;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IAuthService;
 
@@ -49,5 +48,19 @@ public class AuthController {
     ) {
        return ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value())
                .data(authService.refreshToken(request)).build());
+    }
+    @PostMapping("/forgot-password")
+    public ResponseEntity<APIResponse> forgotPassword(
+            @Valid  @RequestBody ForgotPasswordDTO request
+    ) throws MessagingException, UnsupportedEncodingException {
+        authService.ForgotPassword(request);
+        return ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value()).data("send forgot password email successfully").build());
+    }
+    @PostMapping("/reset-password")
+    public ResponseEntity<APIResponse> resetPassword(
+            @RequestParam String token,     @Valid  @RequestBody ResetPasswordDTO request
+    ) throws MessagingException, UnsupportedEncodingException, MisMatchPassword {
+        authService.resetPassword(token,request);
+        return ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value()).data("reset password successfully").build());
     }
 }
