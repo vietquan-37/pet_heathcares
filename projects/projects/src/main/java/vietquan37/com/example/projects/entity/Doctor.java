@@ -9,6 +9,7 @@ import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.utils.converter.WorkingDayListConverter;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -21,14 +22,16 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String specialty;
+    private String imageUrl;
     @OneToOne
     private User user;
-    private LocalDateTime start_time;
-    private LocalDateTime end_time;
+    private LocalTime start_time;
+    private LocalTime end_time;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Appointment> appointments;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<HospitalizedPet> hospitalizations;
     @Convert(converter = WorkingDayListConverter.class)
     private List<WorkingDay> workingDay;
+
 }

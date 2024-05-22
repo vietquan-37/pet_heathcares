@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
+import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
@@ -31,11 +32,9 @@ public class UserController {
     }
     @GetMapping("{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> GetAllUsers(@PathVariable Integer id) {
+    public ResponseEntity<APIResponse> GetAllById(@PathVariable Integer id) {
         var response = UserService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
-
-
     }
 
     @PostMapping("/create")
@@ -49,7 +48,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid UserUpdateDTO dto, @PathVariable Integer id) throws EmailAlreadyExistsException {
         UserService.UpdateUser(dto, id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
@@ -57,6 +56,7 @@ public class UserController {
                 .data("User updated successfully.")
                 .build());
     }
+
     @PatchMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> DeleteUser(@PathVariable Integer id) {

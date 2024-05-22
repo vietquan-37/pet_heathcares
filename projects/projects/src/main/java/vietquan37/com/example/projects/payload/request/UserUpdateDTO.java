@@ -23,5 +23,5 @@ public class UserUpdateDTO {
     private String phone;
     @NotBlank
     private String address;
-    private boolean enabled;
+
 }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.config.CloudinaryService;
 import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Pet;
@@ -41,16 +42,13 @@ private final CloudinaryService cloudinaryService;
     private final int MAX = 5;
 
     @Override
-    public void CreatePet(PetDTO dto, Authentication connectedUser) throws IOException, FileException {
+    public void CreatePet(PetDTO dto, Authentication connectedUser)  {
         User user = (User) connectedUser.getPrincipal();
         Pet pet = mapper.mapDto(dto);
         Customer customer = customerRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
 
-        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
-            String imageUrl = cloudinaryService.uploadFile(dto.getImage());
-            pet.setImageUrl(imageUrl);
-        }
+
 
         pet.setCustomer(customer);
         petRepository.save(pet);
@@ -90,19 +88,30 @@ private final CloudinaryService cloudinaryService;
     }
 
     @Override
-    public void UpdatePet(Integer id, PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException, IOException, FileException {
+    public void UploadImage(Integer id, MultipartFile image, Authentication connectedUser) throws OperationNotPermittedException, FileException, IOException {
         Pet pet = petRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pet not found"));
         User user = ((User) connectedUser.getPrincipal());
         if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())) {
             throw new OperationNotPermittedException("You are not allowed to update that pet");
         }
-        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
-            String imageUrl = cloudinaryService.uploadFile(dto.getImage());
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(image);
             if (pet.getImageUrl() != null && !pet.getImageUrl().isEmpty()) {
                 cloudinaryService.deleteFile(pet.getImageUrl());
             }
             pet.setImageUrl(imageUrl);
+            petRepository.save(pet);
         }
+    }
+
+    @Override
+    public void UpdatePet(Integer id, PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException{
+        Pet pet = petRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pet not found"));
+        User user = ((User) connectedUser.getPrincipal());
+        if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not allowed to update that pet");
+        }
+
         mapper.mapUpdateDto(dto, pet);
         petRepository.save(pet);
     }

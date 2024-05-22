@@ -4,10 +4,12 @@ package vietquan37.com.example.projects.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.entity.User;
 
 import vietquan37.com.example.projects.mapper.passwordMap.EncodedMapping;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
+import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.request.RegisterDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
@@ -42,6 +44,13 @@ public interface UserMapper {
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
     UserResponse mapUserToUserResponse(User user);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "fullName")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "password", source = "password")
+    @Mapping(target = "phoneNumber", source = "telephoneNumber")
+    @Mapping(target = "address", source = "address")
+    UserResponse mapUserToResponse(User user);
 
 
 
@@ -62,6 +71,7 @@ public interface UserMapper {
     @Mapping(target = "address", source = "address")
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "accountLocked", source = "enabled")
     User updateUserFromDto(UserUpdateDTO dto, @MappingTarget User existingUser);
+
+
 }

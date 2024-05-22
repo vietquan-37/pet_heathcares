@@ -13,6 +13,7 @@ import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.mapper.UserMapper;
+import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
@@ -24,7 +25,7 @@ import vietquan37.com.example.projects.service.IUserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -70,8 +71,10 @@ private final int MAX=5;
     @Override
     public UserResponse getUserById(Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return userMapper.mapUserToUserResponse(user);
+        return userMapper.mapUserToResponse(user);
     }
+
+
 
     @Override
     public void UpdateUser(UserUpdateDTO dto, Integer id) throws EntityNotFoundException, EmailAlreadyExistsException {
@@ -80,7 +83,7 @@ private final int MAX=5;
         if (!user.getEmail().equals(dto.getUsername()) && userRepository.findByEmail(dto.getUsername()).isPresent()) {
             throw new EmailAlreadyExistsException("Email already exists");
         }
-       userMapper.updateUserFromDto(dto,user);
+        userMapper.updateUserFromDto(dto,user);
         userRepository.save(user);
     }
 

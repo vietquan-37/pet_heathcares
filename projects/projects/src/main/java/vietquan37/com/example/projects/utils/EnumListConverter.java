@@ -3,6 +3,7 @@ package vietquan37.com.example.projects.utils;
 import jakarta.persistence.AttributeConverter;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public abstract class EnumListConverter<E extends Enum<E>> implements AttributeC
     @Override
     public List<E> convertToEntityAttribute(String dbData) {
         if (dbData == null || dbData.isEmpty()) {
-            return List.of();
+            return new ArrayList<>();
         }
         return Arrays.stream(dbData.split(","))
                 .map(name -> Enum.valueOf(enumType, name))

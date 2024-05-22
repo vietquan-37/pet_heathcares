@@ -28,6 +28,6 @@ public class PetDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
-    private MultipartFile image;
+
 
 }

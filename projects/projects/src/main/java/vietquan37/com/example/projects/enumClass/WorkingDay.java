@@ -7,5 +7,5 @@ public enum WorkingDay {
     THURSDAY,
     FRIDAY,
     SATURDAY,
-    SUNDAY;
+    SUNDAY
 }

@@ -26,7 +26,7 @@ public class UserDTO {
     private String phone;
     @NotBlank
     private String address;
-    @NotBlank
+
     private Role role;
 
 }

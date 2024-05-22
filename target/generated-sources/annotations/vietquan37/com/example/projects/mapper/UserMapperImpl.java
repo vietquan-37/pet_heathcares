@@ -66,6 +66,27 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
+    public UserResponse mapUserToResponse(User user) {
+        if ( user == null ) {
+            return null;
+        }
+
+        UserResponse.UserResponseBuilder userResponse = UserResponse.builder();
+
+        userResponse.id( user.getId() );
+        userResponse.name( user.getFullName() );
+        userResponse.email( user.getEmail() );
+        userResponse.password( user.getPassword() );
+        userResponse.phoneNumber( user.getTelephoneNumber() );
+        userResponse.address( user.getAddress() );
+        userResponse.role( user.getRole() );
+        userResponse.createdAt( user.getCreatedAt() );
+        userResponse.updatedAt( user.getUpdatedAt() );
+
+        return userResponse.build();
+    }
+
+    @Override
     public User mapCreateRequest(UserDTO dto) {
         if ( dto == null ) {
             return null;
@@ -97,7 +118,6 @@ public class UserMapperImpl implements UserMapper {
         existingUser.setPassword( passwordEncoderMapper.encode( dto.getPassword() ) );
         existingUser.setAddress( dto.getAddress() );
         existingUser.setTelephoneNumber( dto.getPhone() );
-        existingUser.setAccountLocked( dto.isEnabled() );
         existingUser.setFullName( dto.getFullName() );
 
         existingUser.setUpdatedAt( java.time.LocalDateTime.now() );
