@@ -42,6 +42,10 @@ public class DoctorMapperImpl implements DoctorMapper {
                 doctor.setWorkingDay( new ArrayList<WorkingDay>( list ) );
             }
         }
+        if ( doctor.getUser() == null ) {
+            doctor.setUser( User.builder().build() );
+        }
+        doctorDTOToUser( doctorDTO, doctor.getUser() );
 
         return doctor;
     }
@@ -58,8 +62,46 @@ public class DoctorMapperImpl implements DoctorMapper {
         doctorResponse.email( doctorUserEmail( doctor ) );
         doctorResponse.imageUrl( doctor.getImageUrl() );
         doctorResponse.specialty( doctor.getSpecialty() );
+        doctorResponse.id( doctor.getId() );
+        doctorResponse.start_time( doctor.getStart_time() );
+        doctorResponse.end_time( doctor.getEnd_time() );
+        List<WorkingDay> list = doctor.getWorkingDay();
+        if ( list != null ) {
+            doctorResponse.workingDay( new ArrayList<WorkingDay>( list ) );
+        }
 
         return doctorResponse.build();
+    }
+
+    @Override
+    public DoctorResponse mapDoctorResponseForAdmin(Doctor doctor) {
+        if ( doctor == null ) {
+            return null;
+        }
+
+        DoctorResponse.DoctorResponseBuilder doctorResponse = DoctorResponse.builder();
+
+        doctorResponse.id( doctor.getId() );
+        doctorResponse.fullName( doctorUserFullName( doctor ) );
+        doctorResponse.email( doctorUserEmail( doctor ) );
+        doctorResponse.imageUrl( doctor.getImageUrl() );
+        doctorResponse.specialty( doctor.getSpecialty() );
+        doctorResponse.start_time( doctor.getStart_time() );
+        doctorResponse.end_time( doctor.getEnd_time() );
+        List<WorkingDay> list = doctor.getWorkingDay();
+        if ( list != null ) {
+            doctorResponse.workingDay( new ArrayList<WorkingDay>( list ) );
+        }
+
+        return doctorResponse.build();
+    }
+
+    protected void doctorDTOToUser(DoctorDTO doctorDTO, User mappingTarget) {
+        if ( doctorDTO == null ) {
+            return;
+        }
+
+        mappingTarget.setUpdatedAt( java.time.LocalDateTime.now() );
     }
 
     private String doctorUserFullName(Doctor doctor) {

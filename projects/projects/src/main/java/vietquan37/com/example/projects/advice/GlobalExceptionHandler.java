@@ -1,5 +1,6 @@
 package vietquan37.com.example.projects.advice;
 
+import com.paypal.base.rest.PayPalRESTException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
@@ -11,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.server.ResponseStatusException;
-import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
-import vietquan37.com.example.projects.exception.FileException;
-import vietquan37.com.example.projects.exception.MisMatchPassword;
-import vietquan37.com.example.projects.exception.OperationNotPermittedException;
+import vietquan37.com.example.projects.exception.*;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 
 import java.util.HashMap;
@@ -50,6 +48,21 @@ public class GlobalExceptionHandler {
                 .error("User account is locked")
                 .build());
     }
+    @ExceptionHandler(UserMistake.class)
+    public ResponseEntity<APIResponse> handleUserMistake(UserMistake ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(ex.getMessage())
+                .build());
+    }
+    @ExceptionHandler(PayPalRESTException.class)
+    public ResponseEntity<APIResponse> handlePayPalRESTException(PayPalRESTException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("PayPal REST Exception: " + ex.getMessage())
+                .build());
+    }
+
     @ExceptionHandler(FileException.class)
     public ResponseEntity<APIResponse> handleFile(FileException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponse.builder()
@@ -74,7 +87,13 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
-
+    @ExceptionHandler(DoctorNotAvailableException.class)
+    public ResponseEntity<APIResponse> handleDoctorNotAvailableException(DoctorNotAvailableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(ex.getMessage())
+                .build());
+    }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<APIResponse> handleExpiredJwtException() {

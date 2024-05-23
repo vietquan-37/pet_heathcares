@@ -19,8 +19,7 @@ public class Review {
     private int rating;
     @ManyToOne
     private Customer customer;
-    @ManyToOne
-    @JoinColumn(name = "appointment_id")
+    @OneToOne(mappedBy = "review") // MappedBy points to the field in Appointment
     private Appointment appointment;
 
 }

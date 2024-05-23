@@ -34,8 +34,15 @@ public class DoctorController {
                 .data("Doctor updated successfully.")
                 .build());
     }
-    @GetMapping
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> GetAllDoctors() {
+        var response=doctorService.GetAllDoctorForAdmin();
+        return ResponseEntity.ok(APIResponse.builder()
+                .data(response).status(HttpStatus.OK.value()).build());
+    }
+    @GetMapping
+    public ResponseEntity<APIResponse> GetAllDoctorsForAdmin() {
         var response=doctorService.GetAllDoctors();
         return ResponseEntity.ok(APIResponse.builder()
                 .data(response).status(HttpStatus.OK.value()).build());

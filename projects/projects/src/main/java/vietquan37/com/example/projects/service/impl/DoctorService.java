@@ -34,7 +34,7 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public List<DoctorResponse> GetAllDoctors() {
-       var doctors= doctorRepository.findAll();
+       var doctors= doctorRepository.findAllByUser_AccountLockedFalse();
        return doctors.stream()
                .map(doctorMapper::mapDoctorResponse).collect(Collectors.toList());
     }
@@ -50,5 +50,11 @@ public class DoctorService implements IDoctorService {
             doctor.setImageUrl(imageUrl);
             doctorRepository.save(doctor);
         }
+    }
+
+    @Override
+    public List<DoctorResponse> GetAllDoctorForAdmin() {
+        var doctors= doctorRepository.findAll();
+        return doctors.stream().map(doctorMapper::mapDoctorResponseForAdmin).collect(Collectors.toList());
     }
 }

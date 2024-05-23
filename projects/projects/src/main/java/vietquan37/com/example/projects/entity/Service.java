@@ -1,14 +1,12 @@
 package vietquan37.com.example.projects.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vietquan37.com.example.projects.enumClass.AppointmentType;
+import vietquan37.com.example.projects.enumClass.ServiceType;
+
 
 import java.math.BigDecimal;
 
@@ -21,7 +19,8 @@ public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private AppointmentType type;
+    @Enumerated(EnumType.STRING)
+    private ServiceType type;
     private BigDecimal price;
 
 
