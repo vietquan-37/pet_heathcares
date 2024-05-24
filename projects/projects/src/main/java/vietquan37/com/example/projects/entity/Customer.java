@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Customer {
     private List<Pet> pets;
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private List<Review> reviews;
-    private double customer_balance;
+    private BigDecimal customer_balance;
     @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL)
     private List<Appointment> appointments;
 

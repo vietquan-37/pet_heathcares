@@ -24,6 +24,7 @@ import vietquan37.com.example.projects.service.IAuthService;
 import vietquan37.com.example.projects.email.EmailService;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -76,7 +77,7 @@ public class AuthService implements IAuthService {
         userRepository.save(user);
         String token = generateAndSaveVerifyToken(user);
         var customer = new Customer();
-        customer.setCustomer_balance(0);
+        customer.setCustomer_balance(BigDecimal.ZERO);
         customer.setUser(user);
         customerRepository.save(customer);
         emailService.sendVerificationEmail(VERIFICATION_URL + token, user.getEmail());

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Doctor;
@@ -13,7 +12,6 @@ import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.mapper.UserMapper;
-import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
@@ -23,6 +21,7 @@ import vietquan37.com.example.projects.repository.UserRepository;
 import vietquan37.com.example.projects.service.IUserService;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class UserService implements IUserService {
     private final UserMapper userMapper;
     private final CustomerRepository customerRepository;
     private final DoctorRepository doctorRepository;
-private final int MAX=5;
+    private  static final int MAX = 5;
 
     @Override
     public void createUser(UserDTO dto) throws EmailAlreadyExistsException {
@@ -52,7 +51,7 @@ private final int MAX=5;
                 doctorRepository.save(doctor);
             } else if (dto.getRole() == Role.USER) {
                 Customer customer = new Customer();
-                customer.setCustomer_balance(0);
+                customer.setCustomer_balance(BigDecimal.ZERO);
                 customer.setUser(user);
                 customerRepository.save(customer);
             }

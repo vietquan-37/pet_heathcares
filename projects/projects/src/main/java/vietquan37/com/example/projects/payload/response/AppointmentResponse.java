@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AppointmentResponse {
     private String paymentUrl;
+    private String msg;
 }

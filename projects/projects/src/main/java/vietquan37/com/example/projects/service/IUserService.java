@@ -16,4 +16,5 @@ void UpdateUser(UserUpdateDTO dto, Integer id) throws EmailAlreadyExistsExceptio
 void deleteUser(Integer id);
 UserResponse getUserById(Integer id);
 
+
 }

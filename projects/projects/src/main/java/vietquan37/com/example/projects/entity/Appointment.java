@@ -45,6 +45,7 @@ public class Appointment {
     @OneToOne
     private Review review;
     private boolean paidStatus;
+
     private String paymentId;
     @ManyToOne
     @JoinColumn(name = "service_id")

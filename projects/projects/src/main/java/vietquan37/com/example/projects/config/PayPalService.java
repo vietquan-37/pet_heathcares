@@ -9,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Appointment;
+import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.repository.AppointmentRepository;
+import vietquan37.com.example.projects.repository.CustomerRepository;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class PayPalService {
     private String successUrl;
     private final APIContext apiContext;
     private final AppointmentRepository appointmentRepository;
+    private final CustomerRepository customerRepository;
 
 
     public Payment createPayment(Appointment appointment) throws PayPalRESTException {
@@ -66,6 +70,10 @@ public class PayPalService {
     public void updateAppointmentPaymentStatus(String paymentId) throws PayPalRESTException {
         Appointment appointment = appointmentRepository.findByPaymentId(paymentId).orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
         appointment.setPaidStatus(true);
+        appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
+        var customer=customerRepository.findByUser_Id(appointment.getCustomer().getUser().getId()).get();
+        customer.setCustomer_balance(BigDecimal.ZERO);
+        customerRepository.save(customer);
         appointmentRepository.save(appointment);
     }
 }
