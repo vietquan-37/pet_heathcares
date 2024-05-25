@@ -109,9 +109,9 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User updateUserFromDto(UserUpdateDTO dto, User existingUser) {
+    public void updateUserFromDto(UserUpdateDTO dto, User existingUser) {
         if ( dto == null ) {
-            return existingUser;
+            return;
         }
 
         existingUser.setEmail( dto.getUsername() );
@@ -121,7 +121,5 @@ public class UserMapperImpl implements UserMapper {
         existingUser.setFullName( dto.getFullName() );
 
         existingUser.setUpdatedAt( java.time.LocalDateTime.now() );
-
-        return existingUser;
     }
 }

@@ -45,5 +45,5 @@ public interface PetMapper {
     @Mapping(target = "gender", source = "gender")
     @Mapping(source = "birthDate", target = "birthDate", dateFormat = "yyyy-MM-dd")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())" )
-    Pet mapUpdateDto(PetDTO dto, @MappingTarget Pet existingPet);
+    void mapUpdateDto(PetDTO dto, @MappingTarget Pet existingPet);
 }

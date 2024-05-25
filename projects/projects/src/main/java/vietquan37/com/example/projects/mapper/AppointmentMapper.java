@@ -28,7 +28,7 @@ public interface AppointmentMapper {
     @Mapping(target = "appointmentPrice", source = "appointmentPrice")
     @Mapping(target = "refund_payments", source = "refund_payments")
     @Mapping(target = "paidStatus", source = "paidStatus")
-    @Mapping(target = "service", source = "service.type")
+    @Mapping(target = "service", source = "service.name")
     @Mapping(target = "appointmentStatus", source = "appointmentStatus")
     AppointmentDataResponse mapAppointmentResponseForUser(Appointment appointment);
 

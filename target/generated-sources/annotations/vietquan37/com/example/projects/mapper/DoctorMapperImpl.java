@@ -18,9 +18,9 @@ import vietquan37.com.example.projects.payload.response.DoctorResponse;
 public class DoctorMapperImpl implements DoctorMapper {
 
     @Override
-    public Doctor doctorDTOToDoctor(DoctorDTO doctorDTO, Doctor doctor) {
+    public void doctorDTOToDoctor(DoctorDTO doctorDTO, Doctor doctor) {
         if ( doctorDTO == null ) {
-            return doctor;
+            return;
         }
 
         doctor.setSpecialty( doctorDTO.getSpecialty() );
@@ -46,8 +46,6 @@ public class DoctorMapperImpl implements DoctorMapper {
             doctor.setUser( User.builder().build() );
         }
         doctorDTOToUser( doctorDTO, doctor.getUser() );
-
-        return doctor;
     }
 
     @Override

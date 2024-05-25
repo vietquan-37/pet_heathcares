@@ -17,7 +17,7 @@ public interface DoctorMapper {
     @Mapping(target = "end_time", source = "end_time")
     @Mapping(target = "workingDay", source = "workingDay")
     @Mapping(target = "user.updatedAt",expression ="java(java.time.LocalDateTime.now())" )
-    Doctor doctorDTOToDoctor(DoctorDTO doctorDTO, @MappingTarget Doctor doctor);
+    void doctorDTOToDoctor(DoctorDTO doctorDTO, @MappingTarget Doctor doctor);
 
     @Mapping(target = "fullName", source = "user.fullName")
     @Mapping(target = "email", source = "user.email")

@@ -5,10 +5,9 @@ import org.springframework.stereotype.Component;
 import vietquan37.com.example.projects.entity.Appointment;
 import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.entity.Pet;
-import vietquan37.com.example.projects.entity.Service;
+import vietquan37.com.example.projects.entity.Services;
 import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
-import vietquan37.com.example.projects.enumClass.ServiceType;
 import vietquan37.com.example.projects.payload.request.AppointmentDTO;
 import vietquan37.com.example.projects.payload.response.AppointmentDataResponse;
 
@@ -53,7 +52,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         appointmentDataResponse.appointmentPrice( appointment.getAppointmentPrice() );
         appointmentDataResponse.refund_payments( appointment.getRefund_payments() );
         appointmentDataResponse.paidStatus( appointment.isPaidStatus() );
-        appointmentDataResponse.service( appointmentServiceType( appointment ) );
+        appointmentDataResponse.service( appointmentServiceName( appointment ) );
         appointmentDataResponse.appointmentStatus( appointment.getAppointmentStatus() );
         appointmentDataResponse.deleted( appointment.isDeleted() );
         appointmentDataResponse.createdAt( appointment.getCreatedAt() );
@@ -96,18 +95,18 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         return fullName;
     }
 
-    private ServiceType appointmentServiceType(Appointment appointment) {
+    private String appointmentServiceName(Appointment appointment) {
         if ( appointment == null ) {
             return null;
         }
-        Service service = appointment.getService();
+        Services service = appointment.getService();
         if ( service == null ) {
             return null;
         }
-        ServiceType type = service.getType();
-        if ( type == null ) {
+        String name = service.getName();
+        if ( name == null ) {
             return null;
         }
-        return type;
+        return name;
     }
 }

@@ -1,15 +1,11 @@
 package vietquan37.com.example.projects.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
-import vietquan37.com.example.projects.enumClass.ServiceType;
-import vietquan37.com.example.projects.service.impl.AppointmentService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +26,7 @@ public class AppointmentDataResponse {
     private BigDecimal appointmentPrice;
     private BigDecimal refund_payments;
     private boolean paidStatus;
-    private ServiceType service;
+    private String service;
     private boolean deleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

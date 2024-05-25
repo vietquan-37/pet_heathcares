@@ -3,14 +3,10 @@ package vietquan37.com.example.projects.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
-import vietquan37.com.example.projects.enumClass.AppointmentType;
-
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
+
 
 
 @Entity
@@ -48,8 +44,8 @@ public class Appointment {
 
     private String paymentId;
     @ManyToOne
-    @JoinColumn(name = "service_id")
-    private Service service;
+    @JoinColumn(name = "services_id")
+    private Services service;
 
 
 }

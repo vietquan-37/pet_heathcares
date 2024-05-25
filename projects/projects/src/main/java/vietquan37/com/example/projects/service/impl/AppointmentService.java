@@ -170,7 +170,7 @@ public class AppointmentService implements IAppointmentService {
         }
 
         if (appointment.isPaidStatus()) {
-            throw new OperationNotPermittedException("Appointment is already paid");
+            throw new UserMistake("Appointment is already paid");
         }
 
         return paymentHandle(appointment);

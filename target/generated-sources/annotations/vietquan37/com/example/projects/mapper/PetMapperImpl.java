@@ -79,9 +79,9 @@ public class PetMapperImpl implements PetMapper {
     }
 
     @Override
-    public Pet mapUpdateDto(PetDTO dto, Pet existingPet) {
+    public void mapUpdateDto(PetDTO dto, Pet existingPet) {
         if ( dto == null ) {
-            return existingPet;
+            return;
         }
 
         existingPet.setName( dto.getName() );
@@ -90,8 +90,6 @@ public class PetMapperImpl implements PetMapper {
         existingPet.setBirthDate( dto.getBirthDate() );
 
         existingPet.setUpdatedAt( java.time.LocalDateTime.now() );
-
-        return existingPet;
     }
 
     private String petCustomerUserFullName(Pet pet) {

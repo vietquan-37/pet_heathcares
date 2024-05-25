@@ -47,9 +47,6 @@ private final CloudinaryService cloudinaryService;
         Pet pet = mapper.mapDto(dto);
         Customer customer = customerRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
-
-
-
         pet.setCustomer(customer);
         petRepository.save(pet);
     }
