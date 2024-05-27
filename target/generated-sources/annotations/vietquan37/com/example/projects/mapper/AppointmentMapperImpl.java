@@ -32,7 +32,6 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         appointment.updatedAt( java.time.LocalDateTime.now() );
         appointment.createdAt( java.time.LocalDateTime.now() );
         appointment.deleted( false );
-        appointment.paidStatus( false );
 
         return appointment.build();
     }
@@ -51,7 +50,6 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         appointmentDataResponse.doctorName( appointmentDoctorUserFullName( appointment ) );
         appointmentDataResponse.appointmentPrice( appointment.getAppointmentPrice() );
         appointmentDataResponse.refund_payments( appointment.getRefund_payments() );
-        appointmentDataResponse.paidStatus( appointment.isPaidStatus() );
         appointmentDataResponse.service( appointmentServiceName( appointment ) );
         appointmentDataResponse.appointmentStatus( appointment.getAppointmentStatus() );
         appointmentDataResponse.deleted( appointment.isDeleted() );

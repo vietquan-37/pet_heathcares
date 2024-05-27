@@ -14,12 +14,9 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer>, PagingAndSortingRepository<Appointment, Integer> {
-    Optional<Appointment> findByPaymentId(String paymentId);
-
     Appointment findByPetIdAndAppointmentDate(Integer petId, LocalDate appointmentDate);
-
     Optional<Appointment> findByIdAndDeletedIsFalse(Integer id);
-
+    Optional<Appointment> findByPaymentsPaymentId(String id);
     Page<Appointment> findAllByCustomerIdAndDeletedIsFalse(Integer customerId, Pageable pageable);
     Page<Appointment> findAllByDeletedIsFalse( Pageable pageable);
 }

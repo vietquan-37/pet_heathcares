@@ -3,10 +3,10 @@ package vietquan37.com.example.projects.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 
 
 @Entity
@@ -40,10 +40,11 @@ public class Appointment {
     private BigDecimal refund_payments;
     @OneToOne
     private Review review;
-    private boolean paidStatus;
-    private String paymentId;
     @ManyToOne
     @JoinColumn(name = "services_id")
     private Services service;
+    @OneToOne
+    private Payments payments;
+
 
 }

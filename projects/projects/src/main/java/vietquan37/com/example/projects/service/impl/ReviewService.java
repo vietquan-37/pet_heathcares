@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Review;
 import vietquan37.com.example.projects.entity.User;
+import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.ReviewMapper;
@@ -38,7 +39,7 @@ public class ReviewService implements IReviewService {
     public void addReview(Integer appointmentId, ReviewDTO dto, Authentication authentication) throws UserMistake, OperationNotPermittedException {
         var appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new EntityNotFoundException("appointment not found"));
         User user = ((User) authentication.getPrincipal());
-        if (!appointment.isPaidStatus() || appointment.getAppointmentDate().isAfter(LocalDate.now())) {
+        if (!appointment.getAppointmentStatus().equals(AppointmentStatus.BOOKED) || appointment.getAppointmentDate().isAfter(LocalDate.now())) {
             throw new UserMistake("you can not review this appointment");
         }
         if (!Objects.equals(appointment.getCustomer().getUser().getId(), user.getId())) {

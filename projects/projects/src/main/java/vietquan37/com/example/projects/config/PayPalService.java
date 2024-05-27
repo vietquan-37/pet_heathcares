@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Appointment;
+import vietquan37.com.example.projects.entity.Payments;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.repository.AppointmentRepository;
 import vietquan37.com.example.projects.repository.CustomerRepository;
+import vietquan37.com.example.projects.repository.PaymentRepository;
 
 
 import java.math.BigDecimal;
@@ -28,15 +30,16 @@ public class PayPalService {
     private final APIContext apiContext;
     private final AppointmentRepository appointmentRepository;
     private final CustomerRepository customerRepository;
+    private final PaymentRepository paymentRepository;
 
 
-    public Payment createPayment(Appointment appointment) throws PayPalRESTException {
+    public Payment createPayment(String total, String description) throws PayPalRESTException {
         Amount amount = new Amount();
         amount.setCurrency("USD");
-        amount.setTotal(appointment.getAppointmentPrice().toString());
+        amount.setTotal(total);
 
         Transaction transaction = new Transaction();
-        transaction.setDescription("Appointment payment");
+        transaction.setDescription(description);
         transaction.setAmount(amount);
 
         List<Transaction> transactions = new ArrayList<>();
@@ -67,13 +70,16 @@ public class PayPalService {
     }
 
 
-    public void updateAppointmentPaymentStatus(String paymentId) throws PayPalRESTException {
-        Appointment appointment = appointmentRepository.findByPaymentId(paymentId).orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
-        appointment.setPaidStatus(true);
-        appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
-        var customer=customerRepository.findByUser_Id(appointment.getCustomer().getUser().getId()).get();
-        customer.setCustomer_balance(BigDecimal.ZERO);
-        customerRepository.save(customer);
-        appointmentRepository.save(appointment);
+    public void updatePaymentStatus(String paymentId) throws PayPalRESTException {
+        Payments payments = paymentRepository.findByPaymentId(paymentId).orElseThrow(() -> new EntityNotFoundException("Payment not found"));
+        var appointment = appointmentRepository.findByPaymentsPaymentId(payments.getPaymentId());
+        if (appointment.isPresent()) {
+            appointment.get().setAppointmentStatus(AppointmentStatus.BOOKED);
+
+            var customer = customerRepository.findByUser_Id(appointment.get().getCustomer().getUser().getId()).get();
+            customer.setCustomer_balance(BigDecimal.ZERO);
+            customerRepository.save(customer);
+            appointmentRepository.save(appointment.get());
+        }
     }
 }

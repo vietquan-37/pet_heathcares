@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vietquan37.com.example.projects.config.PayPalService;
 import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
@@ -44,6 +45,7 @@ public class AppointmentService implements IAppointmentService {
     private final ServiceRepository serviceRepository;
     private final PayPalService payPalService;
     private static final int MAX = 5;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public Page<AppointmentDataResponse> GetAllUserAppointment(Authentication connectedUser, int page) {
@@ -69,7 +71,7 @@ public class AppointmentService implements IAppointmentService {
             throw new OperationNotPermittedException("You are not allowed to update this appointment");
         }
 
-        if (appointment.isPaidStatus()) {
+        if (!appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING)) {
             throw new UserMistake("Cannot update a paid appointment");
         }
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
@@ -103,6 +105,7 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
+    @Transactional
     public AppointmentResponse CreateAppointment(AppointmentDTO dto, Authentication connectedUser)
             throws OperationNotPermittedException, DoctorNotAvailableException, UserMistake, PayPalRESTException {
         if (dto.getAppointmentDate().isBefore(LocalDate.now())) {
@@ -139,7 +142,6 @@ public class AppointmentService implements IAppointmentService {
         BigDecimal adjustedPrice = service.getPrice().subtract(customer.getCustomer_balance());
         if (adjustedPrice.compareTo(BigDecimal.ZERO) < 0) {
             adjustedPrice = BigDecimal.ZERO;
-            appointment.setPaidStatus(true);
             appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
         }
         appointment.setRefund_payments(BigDecimal.ZERO);
@@ -152,48 +154,83 @@ public class AppointmentService implements IAppointmentService {
             return AppointmentResponse.builder().msg("Appointment booked successfully").build();
         } else {
 
-            return paymentHandle(appointment);
+            return handlePayment(appointment);
         }
     }
 
+    @Transactional
     @Override
     public AppointmentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
             throws OperationNotPermittedException, PayPalRESTException, UserMistake {
+
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
-        User user = ((User) connectedUser.getPrincipal());
+        User user = (User) connectedUser.getPrincipal();
 
         if (!Objects.equals(appointment.getCustomer().getUser().getId(), user.getId())) {
             throw new OperationNotPermittedException("You are not allowed to re-pay for this appointment");
         }
-        if (appointment.getAppointmentDate().isBefore(LocalDate.now())){
-            throw new UserMistake("Cannot repay the past appointment");
+
+        if (appointment.getAppointmentDate().isBefore(LocalDate.now())) {
+            throw new UserMistake("Cannot repay a past appointment");
         }
 
-        if (appointment.isPaidStatus()) {
+        if (appointment.getAppointmentStatus().equals(AppointmentStatus.BOOKED)) {
             throw new UserMistake("Appointment is already paid");
         }
 
-        return paymentHandle(appointment);
+        Customer customer = customerRepository.findByUser_Id(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        BigDecimal adjustedPrice = appointment.getService().getPrice().subtract(customer.getCustomer_balance());
+        if (adjustedPrice.compareTo(BigDecimal.ZERO) < 0) {
+            adjustedPrice = BigDecimal.ZERO;
+            appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
+        }
+        appointment.setAppointmentPrice(adjustedPrice);
+        appointmentRepository.save(appointment);
+
+
+        if (appointment.getAppointmentPrice().equals(BigDecimal.ZERO)) {
+            customer.setCustomer_balance(customer.getCustomer_balance().subtract(appointment.getService().getPrice()));
+            customerRepository.save(customer);
+            return AppointmentResponse.builder().msg("Appointment booked successfully").build();
+        } else {
+
+            return handlePayment(appointment);
+        }
     }
 
-
-    private AppointmentResponse paymentHandle(Appointment appointment) throws PayPalRESTException {
+    private AppointmentResponse handlePayment(Appointment appointment) throws PayPalRESTException {
         try {
-            Payment payment = payPalService.createPayment(appointment);
-            appointment.setPaymentId(payment.getId());
+            Payment payment = payPalService.createPayment(
+                    appointment.getAppointmentPrice().toString(),
+                    "Appointment payment"
+            );
+
+            if (appointment.getPayments() != null) {
+                paymentRepository.delete(appointment.getPayments());
+                appointment.setPayments(null);
+                appointmentRepository.save(appointment);
+            }
+
+            Payments payments = new Payments();
+            payments.setPaymentId(payment.getId());
+            paymentRepository.save(payments);
+            appointment.setPayments(payments);
             appointmentRepository.save(appointment);
+
             for (Links link : payment.getLinks()) {
                 if ("approval_url".equals(link.getRel())) {
-                    var payUrl = link.getHref();
-                    return AppointmentResponse.builder().paymentUrl(payUrl).build();
+                    return AppointmentResponse.builder().paymentUrl(link.getHref()).build();
                 }
             }
         } catch (PayPalRESTException e) {
-            throw new PayPalRESTException("Payment creation failed");
+            throw new PayPalRESTException("Payment creation failed", e);
         }
+
         throw new PayPalRESTException("Payment creation failed");
     }
+
 
     @Override
     public Page<AppointmentDataResponse> GetAllAppointment(int page) {
@@ -215,7 +252,7 @@ public class AppointmentService implements IAppointmentService {
             throw new OperationNotPermittedException("You are not allowed to cancel that appointment");
         }
 
-        if (!appointment.isPaidStatus()||appointment.getAppointmentStatus()==AppointmentStatus.CANCELLED) {
+        if (!appointment.getAppointmentStatus().equals(AppointmentStatus.BOOKED)) {
             throw new UserMistake("Cannot cancel this appointment");
         }
 
@@ -252,7 +289,7 @@ public class AppointmentService implements IAppointmentService {
     public void DeleteAppointment(Integer appointmentId, Authentication connectedUser) throws OperationNotPermittedException, UserMistake {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
         User user = ((User) connectedUser.getPrincipal());
-        if (appointment.isPaidStatus()) {
+        if (!appointment.getAppointmentStatus().equals(AppointmentStatus.PENDING)) {
             throw new UserMistake("Cannot delete this appointment");
         }
         if (!Objects.equals(appointment.getCustomer().getUser().getId(), user.getId())) {

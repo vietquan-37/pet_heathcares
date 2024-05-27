@@ -31,7 +31,7 @@ public class PaymentController {
         try {
             Payment payment = service.executePayment(paymentId, payerId);
             if (payment.getState().equals("approved")) {
-                service.updateAppointmentPaymentStatus(paymentId);
+                service.updatePaymentStatus(paymentId);
 
                 return ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value()).data("Payment successful").build());
             }
