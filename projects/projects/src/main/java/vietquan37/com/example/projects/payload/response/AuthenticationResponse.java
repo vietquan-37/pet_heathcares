@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vietquan37.com.example.projects.enumClass.Role;
 
 @Data
 @AllArgsConstructor
@@ -13,5 +14,6 @@ public class AuthenticationResponse {
     private Integer userId;
     private String accessToken;
     private String refreshToken;
+    private Role role;
 
 }

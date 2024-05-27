@@ -111,7 +111,7 @@ public class AuthService implements IAuthService {
         var user = userRepository.findByEmail(request.getUsername()).orElseThrow();
         var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
-        return AuthenticationResponse.builder().accessToken(accessToken).refreshToken(refreshToken).userId(user.getId()).build();
+        return AuthenticationResponse.builder().accessToken(accessToken).role(user.getRole()).refreshToken(refreshToken).userId(user.getId()).build();
     }
 
     private String generateAndSaveVerifyToken(User user) {
