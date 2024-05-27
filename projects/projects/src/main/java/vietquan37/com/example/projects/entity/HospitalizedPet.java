@@ -34,7 +34,13 @@ public class HospitalizedPet {
     @Enumerated(EnumType.STRING)
     private PetStatus status;
     private BigDecimal totalPrice;
+
     @ManyToMany
-    private List<Services>services;
+    @JoinTable(
+            name = "hospitalized_pet_services",
+            joinColumns = @JoinColumn(name = "hospitalized_pet_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private List<Services> services;
 
 }

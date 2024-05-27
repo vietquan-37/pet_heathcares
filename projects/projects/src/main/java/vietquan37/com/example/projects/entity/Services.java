@@ -10,6 +10,7 @@ import vietquan37.com.example.projects.enumClass.ServiceTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,5 +30,7 @@ public class Services {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean deleted;
+    @ManyToMany(mappedBy = "services")
+    private List<HospitalizedPet> hospitalizedPets;
 
 }

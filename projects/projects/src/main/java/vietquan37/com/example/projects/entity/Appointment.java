@@ -46,6 +46,4 @@ public class Appointment {
     @JoinColumn(name = "services_id")
     private Services service;
 
-
-
 }
