@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Services;
+import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.ServiceMapper;
 import vietquan37.com.example.projects.payload.request.ServiceDTO;
@@ -63,5 +64,11 @@ public class ServiceImpl implements IService {
     public ServiceResponse getServiceById(Integer id) {
         Services service = serviceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("service not found"));
         return mapper.mapToAllServiceDto(service);
+    }
+
+    @Override
+    public List<ServiceResponse> getAllServiceByType(ServiceTypes types) {
+        List<Services>services=serviceRepository.findAllByDeletedIsFalseAndType(types);
+        return services.stream().map(mapper::mapToAllServiceDtoForUser).collect(Collectors.toList());
     }
 }

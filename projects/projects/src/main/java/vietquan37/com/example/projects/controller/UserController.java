@@ -30,7 +30,7 @@ public class UserController {
 
 
     }
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<APIResponse> GetAllById(@PathVariable Integer id) {
         var response = UserService.getUserById(id);

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.ServiceDTO;
 
@@ -32,7 +33,7 @@ public class ServiceController {
 
 
     }
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN,STAFF')")
     public ResponseEntity<APIResponse> GetAllById(@PathVariable Integer id) {
         var response = iService.getServiceById(id);
@@ -70,4 +71,12 @@ public class ServiceController {
 
 
     }
+    @GetMapping("/types")
+    public ResponseEntity<APIResponse> GetServiceByTypes(@RequestParam ServiceTypes type) {
+        var response = iService.getAllServiceByType(type);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
+
+
+    }
+
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -19,7 +21,9 @@ public class Review {
     private int rating;
     @ManyToOne
     private Customer customer;
-    @OneToOne(mappedBy = "review") // MappedBy points to the field in Appointment
+    @OneToOne(mappedBy = "review")
     private Appointment appointment;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }

@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "https://localhost:3000")
 public class AuthController {
     private final IAuthService authService;
 

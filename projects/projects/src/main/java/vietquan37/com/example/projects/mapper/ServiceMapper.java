@@ -23,6 +23,12 @@ public interface ServiceMapper {
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "deleted", source = "deleted")
     ServiceResponse mapToAllServiceDto(Services service);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "type", source = "type")
+    @Mapping(target = "price", source = "price")
+
+    ServiceResponse mapToAllServiceDtoForUser(Services service);
     @Mapping(target = "name", source = "name")
     @Mapping(target = "type", source = "type")
     @Mapping(target = "price", source = "price")

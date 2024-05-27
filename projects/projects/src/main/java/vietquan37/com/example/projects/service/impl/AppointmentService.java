@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.config.PayPalService;
 import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
+import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.exception.DoctorNotAvailableException;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
@@ -73,7 +74,7 @@ public class AppointmentService implements IAppointmentService {
         }
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
-        var service = serviceRepository.findById(dto.getServiceId()).orElseThrow(() -> new EntityNotFoundException("Service not found"));
+        var service = serviceRepository.findByIdAndDeletedIsFalseAndType(dto.getServiceId(), ServiceTypes.APPOINTMENT).orElseThrow(() -> new EntityNotFoundException("Service not found"));
 
         Pet pet = petRepository.findById(dto.getPetId())
                 .orElseThrow(() -> new EntityNotFoundException("Pet not found"));
@@ -111,7 +112,7 @@ public class AppointmentService implements IAppointmentService {
 
         Doctor doctor = doctorRepository.findById(dto.getDoctorId())
                 .orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
-        var service = serviceRepository.findById(dto.getServiceId()).orElseThrow(() -> new EntityNotFoundException("Service not found"));
+        var service = serviceRepository.findByIdAndDeletedIsFalseAndType(dto.getServiceId(), ServiceTypes.APPOINTMENT).orElseThrow(() -> new EntityNotFoundException("Service not found"));
 
         Pet pet = petRepository.findById(dto.getPetId())
                 .orElseThrow(() -> new EntityNotFoundException("Pet not found"));

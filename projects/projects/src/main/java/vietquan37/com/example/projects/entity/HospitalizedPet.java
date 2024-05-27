@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vietquan37.com.example.projects.enumClass.PetStatus;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,6 @@ public class HospitalizedPet {
     private Cage cage;
     @Enumerated(EnumType.STRING)
     private PetStatus status;
-
+    private BigDecimal totalPrice;
 
 }

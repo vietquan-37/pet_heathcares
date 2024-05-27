@@ -3,8 +3,7 @@ package vietquan37.com.example.projects.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import vietquan37.com.example.projects.entity.Services;
-
-import java.math.BigDecimal;
+import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,5 +11,7 @@ import java.util.Optional;
 public interface ServiceRepository extends JpaRepository<Services, Integer> {
     Optional<Services> findByName(String name);
     List<Services> findAllByDeletedIsFalse();
+    Optional<Services> findByIdAndDeletedIsFalseAndType(Integer id, ServiceTypes types);
+    List<Services> findAllByDeletedIsFalseAndType(ServiceTypes types);
 
 }

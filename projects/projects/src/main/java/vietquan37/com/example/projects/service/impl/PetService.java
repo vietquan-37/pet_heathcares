@@ -39,7 +39,7 @@ public class PetService implements IPetService {
 private final CloudinaryService cloudinaryService;
     private final PetRepository petRepository;
     private final PetMapper mapper;
-    private final int MAX = 5;
+    private  static final int MAX = 5;
 
     @Override
     public void CreatePet(PetDTO dto, Authentication connectedUser)  {

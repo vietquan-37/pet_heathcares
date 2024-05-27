@@ -52,6 +52,25 @@ public class ServiceMapperImpl implements ServiceMapper {
     }
 
     @Override
+    public ServiceResponse mapToAllServiceDtoForUser(Services service) {
+        if ( service == null ) {
+            return null;
+        }
+
+        ServiceResponse.ServiceResponseBuilder serviceResponse = ServiceResponse.builder();
+
+        serviceResponse.id( service.getId() );
+        serviceResponse.name( service.getName() );
+        serviceResponse.type( service.getType() );
+        serviceResponse.price( service.getPrice() );
+        serviceResponse.createdAt( service.getCreatedAt() );
+        serviceResponse.updatedAt( service.getUpdatedAt() );
+        serviceResponse.deleted( service.isDeleted() );
+
+        return serviceResponse.build();
+    }
+
+    @Override
     public void updateServiceFromDto(ServiceDTO dto, Services service) {
         if ( dto == null ) {
             return;
