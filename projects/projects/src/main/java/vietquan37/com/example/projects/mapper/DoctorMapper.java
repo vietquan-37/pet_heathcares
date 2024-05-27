@@ -1,13 +1,10 @@
 package vietquan37.com.example.projects.mapper;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.response.DoctorResponse;
-
-
 
 
 @Mapper(componentModel = "spring")

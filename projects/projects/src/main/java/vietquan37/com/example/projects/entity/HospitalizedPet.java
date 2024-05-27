@@ -34,5 +34,7 @@ public class HospitalizedPet {
     @Enumerated(EnumType.STRING)
     private PetStatus status;
     private BigDecimal totalPrice;
+    @ManyToMany
+    private List<Services>services;
 
 }

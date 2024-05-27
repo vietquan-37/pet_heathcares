@@ -17,10 +17,9 @@ import java.io.UnsupportedEncodingException;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
     private final IAuthService authService;
-
     @PostMapping("/register")
     public ResponseEntity<APIResponse> registerUser(@RequestBody @Valid RegisterDTO registerDTO) throws MessagingException, EmailAlreadyExistsException, UnsupportedEncodingException {
         authService.register(registerDTO);
