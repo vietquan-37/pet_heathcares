@@ -13,14 +13,14 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class DoctorDTO {
+public class   DoctorDTO {
     @NotBlank
     private String specialty;
     @NotNull
     private LocalTime start_time;
     @NotNull
     private LocalTime end_time;
-    @Size(min = 3, message = "Working days must contain at least 3 days")
+    @Size(min = 6, message = "Working days must contain at least 6 days")
     @UniqueElements(message = "Working days must be unique")
     private List<WorkingDay> workingDay;
 

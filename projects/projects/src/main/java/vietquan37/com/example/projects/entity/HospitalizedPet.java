@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 import vietquan37.com.example.projects.enumClass.PetStatus;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -25,8 +27,8 @@ public class HospitalizedPet {
     private String treatment;
     @ManyToOne
     private Pet pet;
-    private Date admissionDate;
-    private Date dischargeDate;
+    private LocalDate admissionDate;
+    private LocalDate dischargeDate;
     @ManyToOne
     private Doctor doctor;
     @ManyToOne
@@ -42,5 +44,14 @@ public class HospitalizedPet {
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
     private List<Services> services;
+    @ElementCollection
+    @CollectionTable(
+            name = "hospitalized_pet_services",
+            joinColumns = @JoinColumn(name = "hospitalized_pet_id")
+    )
+    @MapKeyJoinColumn(name = "service_id")
+    @Column(name = "service_usage")
+    private Map<Services, LocalDate> serviceUsage;
+    private boolean deleted;
 
 }
