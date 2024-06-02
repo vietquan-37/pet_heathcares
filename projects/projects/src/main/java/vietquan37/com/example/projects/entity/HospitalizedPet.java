@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Data
@@ -36,22 +35,8 @@ public class HospitalizedPet {
     @Enumerated(EnumType.STRING)
     private PetStatus status;
     private BigDecimal totalPrice;
-
-    @ManyToMany
-    @JoinTable(
-            name = "hospitalized_pet_services",
-            joinColumns = @JoinColumn(name = "hospitalized_pet_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    private List<Services> services;
-    @ElementCollection
-    @CollectionTable(
-            name = "hospitalized_pet_services",
-            joinColumns = @JoinColumn(name = "hospitalized_pet_id")
-    )
-    @MapKeyJoinColumn(name = "service_id")
-    @Column(name = "service_usage")
-    private Map<Services, LocalDate> serviceUsage;
+    @OneToMany(mappedBy = "hospitalizedPet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HospitalizedPetServices> hospitalizedPetServices;
     private boolean deleted;
 
 }

@@ -30,7 +30,8 @@ public class Services {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean deleted;
-    @ManyToMany(mappedBy = "services")
-    private List<HospitalizedPet> hospitalizedPets;
+
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HospitalizedPetServices> hospitalizedPetServices;
 
 }

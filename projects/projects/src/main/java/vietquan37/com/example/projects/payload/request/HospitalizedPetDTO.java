@@ -27,8 +27,6 @@ public class HospitalizedPetDTO {
     private Integer doctorId;
     @NotNull
     private Integer cageId;
-    @NotNull
-    private PetStatus status;
     @Size(min = 1)
     private List<Integer> serviceIds;
 }
