@@ -21,6 +21,7 @@ public class Cage {
     private Integer id;
     @Column(nullable = false, unique = true)
     private int cageNumber;
+    private int capacity;
     @Enumerated(EnumType.STRING)
     private CageStatus cageStatus;
     @OneToMany(mappedBy = "cage", cascade = CascadeType.ALL)

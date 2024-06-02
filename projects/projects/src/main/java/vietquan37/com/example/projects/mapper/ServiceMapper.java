@@ -5,6 +5,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import vietquan37.com.example.projects.entity.Services;
 import vietquan37.com.example.projects.payload.request.ServiceDTO;
+import vietquan37.com.example.projects.payload.request.ServiceUpdateDTO;
 import vietquan37.com.example.projects.payload.response.ServiceResponse;
 @Mapper(componentModel = "spring")
 public interface ServiceMapper {
@@ -30,8 +31,7 @@ public interface ServiceMapper {
 
     ServiceResponse mapToAllServiceDtoForUser(Services service);
     @Mapping(target = "name", source = "name")
-    @Mapping(target = "type", source = "type")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
-    void updateServiceFromDto(ServiceDTO dto, @MappingTarget Services service);
+    void updateServiceFromDto(ServiceUpdateDTO dto, @MappingTarget Services service);
 }

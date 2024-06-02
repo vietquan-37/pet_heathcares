@@ -23,6 +23,7 @@ public class CageMapperImpl implements CageMapper {
 
         cage.cageNumber( cageDTO.getCageNumber() );
         cage.cageStatus( cageDTO.getCageStatus() );
+        cage.capacity( cageDTO.getCapacity() );
 
         cage.updatedAt( java.time.LocalDateTime.now() );
         cage.createdAt( java.time.LocalDateTime.now() );
@@ -37,6 +38,7 @@ public class CageMapperImpl implements CageMapper {
             return;
         }
 
+        cage.setCapacity( DTO.getCapacity() );
         cage.setCageNumber( DTO.getCageNumber() );
         cage.setCageStatus( DTO.getCageStatus() );
 
@@ -57,6 +59,7 @@ public class CageMapperImpl implements CageMapper {
         cageResponse.updatedAt( cage.getUpdatedAt() );
         cageResponse.createdAt( cage.getCreatedAt() );
         cageResponse.deleted( cage.isDeleted() );
+        cageResponse.capacity( cage.getCapacity() );
 
         return cageResponse.build();
     }

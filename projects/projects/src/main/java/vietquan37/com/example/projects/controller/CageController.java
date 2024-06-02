@@ -62,7 +62,7 @@ private final ICageService cageService;
 
     @PatchMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> DeleteCage(@PathVariable Integer id) {
+    public ResponseEntity<APIResponse> DeleteCage(@PathVariable Integer id) throws UserMistake {
        cageService.deleteCage(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

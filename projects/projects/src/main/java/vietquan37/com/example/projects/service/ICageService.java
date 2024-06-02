@@ -10,7 +10,7 @@ import java.util.List;
 public interface ICageService {
     void addCage(CageDTO cage) throws UserMistake;
     void updateCage(Integer id,CageDTO cage) throws UserMistake;
-    void deleteCage(Integer id);
+    void deleteCage(Integer id) throws UserMistake;
     CageResponse getCageById(Integer id) ;
     List<CageResponse> getAllCage();
     List<CageResponse> getAllCageForStaff();

@@ -1,7 +1,9 @@
 package vietquan37.com.example.projects.service;
 
+import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.HospitalizedPetDTO;
 
 public interface IHospitalizedPetService {
-    void addHospitalizedPet(HospitalizedPetDTO hospitalizedPet);
+    void addHospitalizedPet(HospitalizedPetDTO hospitalizedPet) throws UserMistake;
+
 }

@@ -8,6 +8,7 @@ import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.ServiceMapper;
 import vietquan37.com.example.projects.payload.request.ServiceDTO;
+import vietquan37.com.example.projects.payload.request.ServiceUpdateDTO;
 import vietquan37.com.example.projects.payload.response.ServiceResponse;
 import vietquan37.com.example.projects.repository.ServiceRepository;
 import vietquan37.com.example.projects.service.IService;
@@ -43,7 +44,7 @@ public class ServiceImpl implements IService {
     }
 
     @Override
-    public void updateService(Integer id, ServiceDTO dto) throws UserMistake {
+    public void updateService(Integer id, ServiceUpdateDTO dto) throws UserMistake {
         Services service = serviceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("service not found"));
         if (!dto.getName().equals(service.getName()) && serviceRepository.findByName(dto.getName()).isPresent()) {
             throw new UserMistake("the name have been used by another service");

@@ -10,6 +10,7 @@ import vietquan37.com.example.projects.mapper.CageMapper;
 import vietquan37.com.example.projects.payload.request.CageDTO;
 import vietquan37.com.example.projects.payload.response.CageResponse;
 import vietquan37.com.example.projects.repository.CageRepository;
+import vietquan37.com.example.projects.repository.HospitalizedPetRepository;
 import vietquan37.com.example.projects.service.ICageService;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class CageService implements ICageService {
     private final CageRepository cageRepository;
     private final CageMapper cageMapper;
+    private final HospitalizedPetRepository hospitalizedPetRepository;
 
     @Override
     public void addCage(CageDTO cage) throws UserMistake {
@@ -33,6 +35,7 @@ public class CageService implements ICageService {
     @Override
     public void updateCage(Integer id, CageDTO dto) throws UserMistake {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("cage not found"));
+
         if (cage.getCageNumber() != dto.getCageNumber() && cageRepository.findByCageNumber(dto.getCageNumber()) != null) {
             throw new UserMistake("cage number can not be duplicated");
         }
@@ -41,8 +44,11 @@ public class CageService implements ICageService {
     }
 
     @Override
-    public void deleteCage(Integer id) {
+    public void deleteCage(Integer id) throws UserMistake {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("cage not found"));
+        if(hospitalizedPetRepository.countHospitalizedPetByCageIdAndDischargeDate(id,null)>0){
+            throw new UserMistake("This cage has been used by hospitalized pets");
+        }
         cage.setDeleted(true);
         cageRepository.save(cage);
     }

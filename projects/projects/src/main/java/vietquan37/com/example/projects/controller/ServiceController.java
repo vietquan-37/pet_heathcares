@@ -10,6 +10,7 @@ import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.ServiceDTO;
 
+import vietquan37.com.example.projects.payload.request.ServiceUpdateDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IService;
 
@@ -52,7 +53,7 @@ public class ServiceController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid  ServiceDTO dto, @PathVariable Integer id) throws  UserMistake {
+    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid ServiceUpdateDTO dto, @PathVariable Integer id) throws  UserMistake {
         iService.updateService(id, dto);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

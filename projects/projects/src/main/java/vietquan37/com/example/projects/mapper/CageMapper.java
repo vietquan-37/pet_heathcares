@@ -12,10 +12,12 @@ import vietquan37.com.example.projects.payload.response.CageResponse;
 public interface CageMapper {
     @Mapping(target = "cageNumber", source = "cageNumber")
     @Mapping(target = "cageStatus", source = "cageStatus")
+    @Mapping(target = "capacity", source = "capacity")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "deleted", constant = "false")
     Cage map(CageDTO cageDTO);
+    @Mapping(target = "capacity", source = "capacity")
     @Mapping(target = "cageNumber", source = "cageNumber")
     @Mapping(target = "cageStatus", source = "cageStatus")
     @Mapping(target = "updatedAt",expression ="java(java.time.LocalDateTime.now())" )
@@ -26,5 +28,6 @@ public interface CageMapper {
     @Mapping(target = "updatedAt",source = "updatedAt")
     @Mapping(target = "createdAt",source = "createdAt")
     @Mapping(target = "deleted", source = "deleted")
+    @Mapping(target = "capacity", source = "capacity")
     CageResponse mapResponse(Cage cage);
 }

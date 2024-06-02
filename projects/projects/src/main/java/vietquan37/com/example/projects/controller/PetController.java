@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.exception.FileException;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
+import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.PetDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IPetService;
@@ -68,7 +69,7 @@ public class PetController {
     }
     @PatchMapping("/delete/{petId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> DeletePet(@PathVariable Integer petId, Authentication connectedUser) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> DeletePet(@PathVariable Integer petId, Authentication connectedUser) throws OperationNotPermittedException, UserMistake {
         petService.DeletePet(petId, connectedUser);
         return ResponseEntity.ok( APIResponse.builder().status(HttpStatus.OK.value())
                 .data("Pet deleted successfully").build());

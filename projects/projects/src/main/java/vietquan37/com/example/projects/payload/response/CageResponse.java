@@ -19,4 +19,5 @@ public class CageResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean deleted;
+    private int capacity;
 }

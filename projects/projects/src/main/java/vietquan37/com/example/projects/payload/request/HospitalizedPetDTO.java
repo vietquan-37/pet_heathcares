@@ -15,6 +15,7 @@ import java.util.List;
 public class HospitalizedPetDTO {
     @NotBlank
     private String dailyNote;
+
     @NotBlank
     private String diagnosis;
     @NotBlank

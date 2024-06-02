@@ -29,7 +29,6 @@ public class ReviewController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> GetAllById(@PathVariable Integer id) {
         var response = reviewService.getReviewById(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
@@ -43,11 +42,11 @@ public class ReviewController {
 
     @PostMapping("/create/{appointmentId}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> CreateUser(@PathVariable Integer appointmentId, @RequestBody @Valid ReviewDTO dto, Authentication authentication) throws UserMistake, OperationNotPermittedException {
+    public ResponseEntity<APIResponse> CreateReview(@PathVariable Integer appointmentId, @RequestBody @Valid ReviewDTO dto, Authentication authentication) throws UserMistake, OperationNotPermittedException {
         reviewService.addReview(appointmentId, dto, authentication);
         return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.builder()
                 .status(HttpStatus.CREATED.value())
-                .data("User registered successfully.")
+                .data("Review created successfully.")
                 .build());
     }
 
@@ -57,7 +56,7 @@ public class ReviewController {
         reviewService.updateReview(id, dto, authentication);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())
-                .data("User updated successfully.")
+                .data("Review updated successfully.")
                 .build());
     }
 
