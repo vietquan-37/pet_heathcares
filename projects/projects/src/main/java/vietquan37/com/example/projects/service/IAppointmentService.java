@@ -8,10 +8,10 @@ import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.AppointmentDTO;
 import vietquan37.com.example.projects.payload.response.AppointmentDataResponse;
-import vietquan37.com.example.projects.payload.response.AppointmentResponse;
+import vietquan37.com.example.projects.payload.response.PaymentResponse;
 
 public interface IAppointmentService {
-    AppointmentResponse CreateAppointment(AppointmentDTO dto, Authentication connectedUser) throws OperationNotPermittedException, DoctorNotAvailableException, UserMistake, PayPalRESTException;
+    PaymentResponse CreateAppointment(AppointmentDTO dto, Authentication connectedUser) throws OperationNotPermittedException, DoctorNotAvailableException, UserMistake, PayPalRESTException;
 
     void CancelAppointment(Integer appointmentId, Authentication connectedUser) throws OperationNotPermittedException, UserMistake;
 
@@ -23,6 +23,6 @@ public interface IAppointmentService {
     Page<AppointmentDataResponse> GetAllAppointment( int page);
     void UpdateAppointment(Integer appointmentId, AppointmentDTO dto, Authentication connectedUser) throws OperationNotPermittedException, DoctorNotAvailableException, UserMistake;
 
-    AppointmentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
+    PaymentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
             throws OperationNotPermittedException, PayPalRESTException, UserMistake;
 }

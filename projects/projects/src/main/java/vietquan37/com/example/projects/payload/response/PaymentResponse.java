@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-public class AppointmentResponse {
+public class PaymentResponse {
     private String paymentUrl;
     private String msg;
 }

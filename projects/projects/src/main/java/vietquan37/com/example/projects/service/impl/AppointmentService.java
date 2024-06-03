@@ -22,7 +22,7 @@ import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.AppointmentMapper;
 import vietquan37.com.example.projects.payload.request.AppointmentDTO;
 import vietquan37.com.example.projects.payload.response.AppointmentDataResponse;
-import vietquan37.com.example.projects.payload.response.AppointmentResponse;
+import vietquan37.com.example.projects.payload.response.PaymentResponse;
 import vietquan37.com.example.projects.repository.*;
 import vietquan37.com.example.projects.service.IAppointmentService;
 
@@ -106,7 +106,7 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     @Transactional
-    public AppointmentResponse CreateAppointment(AppointmentDTO dto, Authentication connectedUser)
+    public PaymentResponse CreateAppointment(AppointmentDTO dto, Authentication connectedUser)
             throws OperationNotPermittedException, DoctorNotAvailableException, UserMistake, PayPalRESTException {
         if (dto.getAppointmentDate().isBefore(LocalDate.now())) {
             throw new UserMistake("Appointment date cannot be in the past");
@@ -151,7 +151,7 @@ public class AppointmentService implements IAppointmentService {
 
             customer.setCustomer_balance(customer.getCustomer_balance().subtract(service.getPrice()));
             customerRepository.save(customer);
-            return AppointmentResponse.builder().msg("Appointment booked successfully").build();
+            return PaymentResponse.builder().msg("Appointment booked successfully").build();
         } else {
 
             return handlePayment(appointment);
@@ -160,7 +160,7 @@ public class AppointmentService implements IAppointmentService {
 
     @Transactional
     @Override
-    public AppointmentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
+    public PaymentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
             throws OperationNotPermittedException, PayPalRESTException, UserMistake {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -193,14 +193,14 @@ public class AppointmentService implements IAppointmentService {
         if (appointment.getAppointmentPrice().equals(BigDecimal.ZERO)) {
             customer.setCustomer_balance(customer.getCustomer_balance().subtract(appointment.getService().getPrice()));
             customerRepository.save(customer);
-            return AppointmentResponse.builder().msg("Appointment booked successfully").build();
+            return PaymentResponse.builder().msg("Appointment booked successfully").build();
         } else {
 
             return handlePayment(appointment);
         }
     }
 
-    private AppointmentResponse handlePayment(Appointment appointment) throws PayPalRESTException {
+    private PaymentResponse handlePayment(Appointment appointment) throws PayPalRESTException {
         try {
             Payment payment = payPalService.createPayment(
                     appointment.getAppointmentPrice().toString(),
@@ -221,7 +221,7 @@ public class AppointmentService implements IAppointmentService {
 
             for (Links link : payment.getLinks()) {
                 if ("approval_url".equals(link.getRel())) {
-                    return AppointmentResponse.builder().paymentUrl(link.getHref()).build();
+                    return PaymentResponse.builder().paymentUrl(link.getHref()).build();
                 }
             }
         } catch (PayPalRESTException e) {

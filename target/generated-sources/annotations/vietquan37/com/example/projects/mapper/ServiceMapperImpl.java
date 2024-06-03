@@ -4,6 +4,7 @@ import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import vietquan37.com.example.projects.entity.Services;
 import vietquan37.com.example.projects.payload.request.ServiceDTO;
+import vietquan37.com.example.projects.payload.request.ServiceUpdateDTO;
 import vietquan37.com.example.projects.payload.response.ServiceResponse;
 
 @Generated(
@@ -71,13 +72,12 @@ public class ServiceMapperImpl implements ServiceMapper {
     }
 
     @Override
-    public void updateServiceFromDto(ServiceDTO dto, Services service) {
+    public void updateServiceFromDto(ServiceUpdateDTO dto, Services service) {
         if ( dto == null ) {
             return;
         }
 
         service.setName( dto.getName() );
-        service.setType( dto.getType() );
         service.setPrice( dto.getPrice() );
 
         service.setUpdatedAt( java.time.LocalDateTime.now() );

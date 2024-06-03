@@ -127,7 +127,7 @@ public class PetService implements IPetService {
         if (!Objects.equals(pet.getCustomer().getUser().getId(), user.getId())) {
             throw new OperationNotPermittedException("You are not allow to delete that pet");
         }
-        if(hospitalizedPetRepository.countHospitalizedPetByCageIdAndDischargeDate(id,null)>0||appointmentRepository.countAppointmentByPetIdAndAppointmentDateAfter(id, LocalDate.now())>0){
+        if(hospitalizedPetRepository.countHospitalizedPetByCageIdAndDischargeDateAndDeletedIsFalse(id,null)>0||appointmentRepository.countAppointmentByPetIdAndAppointmentDateAfter(id, LocalDate.now())>0){
             throw new UserMistake("This pet has been in valid booking or take care by us");
         }
         pet.setDeleted(true);

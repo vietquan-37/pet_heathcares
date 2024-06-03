@@ -46,7 +46,7 @@ public class CageService implements ICageService {
     @Override
     public void deleteCage(Integer id) throws UserMistake {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("cage not found"));
-        if(hospitalizedPetRepository.countHospitalizedPetByCageIdAndDischargeDate(id,null)>0){
+        if(hospitalizedPetRepository.countHospitalizedPetByCageIdAndDischargeDateAndDeletedIsFalse(id,null)>0){
             throw new UserMistake("This cage has been used by hospitalized pets");
         }
         cage.setDeleted(true);

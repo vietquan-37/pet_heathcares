@@ -13,6 +13,7 @@ import vietquan37.com.example.projects.entity.Payments;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.repository.AppointmentRepository;
 import vietquan37.com.example.projects.repository.CustomerRepository;
+import vietquan37.com.example.projects.repository.HospitalizedPetRepository;
 import vietquan37.com.example.projects.repository.PaymentRepository;
 
 
@@ -31,6 +32,7 @@ public class PayPalService {
     private final AppointmentRepository appointmentRepository;
     private final CustomerRepository customerRepository;
     private final PaymentRepository paymentRepository;
+    private final HospitalizedPetRepository hospitalizedPetRepository;
 
 
     public Payment createPayment(String total, String description) throws PayPalRESTException {
@@ -81,5 +83,11 @@ public class PayPalService {
             customerRepository.save(customer);
             appointmentRepository.save(appointment.get());
         }
+        var pet=hospitalizedPetRepository.findByPaymentsPaymentId(payments.getPaymentId());
+        if(pet.isPresent()){
+            pet.get().setPaid(true);
+            hospitalizedPetRepository.save(pet.get());
+        }
+
     }
 }

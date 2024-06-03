@@ -38,5 +38,7 @@ public class HospitalizedPet {
     @OneToMany(mappedBy = "hospitalizedPet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HospitalizedPetServices> hospitalizedPetServices;
     private boolean deleted;
-
+    private boolean paid;
+    @OneToOne
+    private Payments payments;
 }
