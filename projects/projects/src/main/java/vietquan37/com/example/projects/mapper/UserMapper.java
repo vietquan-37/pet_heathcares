@@ -63,7 +63,6 @@ public interface UserMapper {
 
 
     @Mapping(target = "email", source = "username")
-    @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
     @Mapping(target = "address", source = "address")
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")

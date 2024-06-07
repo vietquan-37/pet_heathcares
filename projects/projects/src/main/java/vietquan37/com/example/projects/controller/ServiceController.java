@@ -20,14 +20,14 @@ import vietquan37.com.example.projects.service.IService;
 public class ServiceController {
     private final IService iService;
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('ADMIN,STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<APIResponse> GetAllService() {
         var response = iService.getAllServicesForAdmin();
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
 
 
     }
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<APIResponse> GetAllServiceForUser() {
         var response = iService.getAllServicesForAdmin();
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
@@ -35,7 +35,7 @@ public class ServiceController {
 
     }
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN,STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN','STAFF')")
     public ResponseEntity<APIResponse> GetAllById(@PathVariable Integer id) {
         var response = iService.getServiceById(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
@@ -53,7 +53,7 @@ public class ServiceController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid ServiceUpdateDTO dto, @PathVariable Integer id) throws  UserMistake {
+    public ResponseEntity<APIResponse> UpdateService(@RequestBody @Valid ServiceUpdateDTO dto, @PathVariable Integer id) throws  UserMistake {
         iService.updateService(id, dto);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

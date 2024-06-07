@@ -19,7 +19,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-    public static final String API_V_1_AUTH = "/api/v1/auth/**";
+    private  final String[] PUBLIC_ENDPOINTS = {
+            "/api/v1/auth/**", "/v2/api-docs", "payment/**", "api/v1/service","api/v1/review",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html",
+            "/api/v1/doctor"
+    };
     private final JwtFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -30,17 +42,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(
-                                        API_V_1_AUTH, "/v2/api-docs", "payment/**", "api/v1/service","api/v1/review",
-                                        "/v3/api-docs",
-                                        "/v3/api-docs/**",
-                                        "/swagger-resources",
-                                        "/swagger-resources/**",
-                                        "/configuration/ui",
-                                        "/configuration/security",
-                                        "/swagger-ui/**",
-                                        "/webjars/**",
-                                        "/swagger-ui.html",
-                                        "/api/v1/doctor"
+                                        PUBLIC_ENDPOINTS
                                 )
                                 .permitAll()
                                     .anyRequest()

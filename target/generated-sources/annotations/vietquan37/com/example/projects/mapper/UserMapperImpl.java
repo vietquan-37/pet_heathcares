@@ -115,7 +115,6 @@ public class UserMapperImpl implements UserMapper {
         }
 
         existingUser.setEmail( dto.getUsername() );
-        existingUser.setPassword( passwordEncoderMapper.encode( dto.getPassword() ) );
         existingUser.setAddress( dto.getAddress() );
         existingUser.setTelephoneNumber( dto.getPhone() );
         existingUser.setFullName( dto.getFullName() );

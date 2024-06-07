@@ -6,14 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
 import vietquan37.com.example.projects.exception.FileException;
 import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
-import vietquan37.com.example.projects.payload.response.DoctorResponse;
+
 import vietquan37.com.example.projects.service.IDoctorService;
 
 import java.io.IOException;
@@ -34,13 +33,7 @@ public class DoctorController {
                 .data("Doctor updated successfully.")
                 .build());
     }
-    @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> GetAllDoctors() {
-        var response=doctorService.GetAllDoctorForAdmin();
-        return ResponseEntity.ok(APIResponse.builder()
-                .data(response).status(HttpStatus.OK.value()).build());
-    }
+
     @GetMapping
     public ResponseEntity<APIResponse> GetAllDoctorsForAdmin() {
         var response=doctorService.GetAllDoctors();

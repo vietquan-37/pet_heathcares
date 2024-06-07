@@ -8,13 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
-import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 import vietquan37.com.example.projects.service.IUserService;
-
-
 @RestController
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
