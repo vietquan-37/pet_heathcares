@@ -12,7 +12,7 @@ import vietquan37.com.example.projects.payload.response.UserResponse;
 public interface IUserService {
 Page<UserResponse> getAllUser(int page);
 void createUser(UserDTO dto) throws EmailAlreadyExistsException;
-void UpdateUser(UserUpdateDTO dto, Integer id) throws EmailAlreadyExistsException;
+void UpdateUser(UserUpdateDTO dto, Integer id);
 void deleteUser(Integer id);
 UserResponse getUserById(Integer id);
 

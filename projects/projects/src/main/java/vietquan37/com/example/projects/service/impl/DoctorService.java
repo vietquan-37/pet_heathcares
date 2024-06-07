@@ -57,4 +57,11 @@ public class DoctorService implements IDoctorService {
         var doctors= doctorRepository.findAll();
         return doctors.stream().map(doctorMapper::mapDoctorResponseForAdmin).collect(Collectors.toList());
     }
+
+    @Override
+    public DoctorResponse GetDoctorById(Integer id) {
+        Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        return doctorMapper.mapDoctorResponseForAdmin(doctor);
+
+    }
 }

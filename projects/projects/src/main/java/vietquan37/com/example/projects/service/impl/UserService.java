@@ -76,12 +76,8 @@ public class UserService implements IUserService {
 
 
     @Override
-    public void UpdateUser(UserUpdateDTO dto, Integer id) throws EntityNotFoundException, EmailAlreadyExistsException {
+    public void UpdateUser(UserUpdateDTO dto, Integer id) throws EntityNotFoundException{
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        if (!user.getEmail().equals(dto.getUsername()) && userRepository.findByEmail(dto.getUsername()).isPresent()) {
-            throw new EmailAlreadyExistsException("Email already exists");
-        }
         userMapper.updateUserFromDto(dto,user);
         userRepository.save(user);
     }

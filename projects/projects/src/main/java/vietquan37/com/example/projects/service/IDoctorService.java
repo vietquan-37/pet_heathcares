@@ -13,4 +13,5 @@ public interface IDoctorService {
     List<DoctorResponse> GetAllDoctors();
     void UploadImage(Integer id, MultipartFile image) throws FileException, IOException;
     List<DoctorResponse> GetAllDoctorForAdmin();
+    DoctorResponse GetDoctorById(Integer id);
 }

@@ -61,8 +61,6 @@ public interface UserMapper {
     @Mapping(target = "address", source = "address")
     User mapCreateRequest(UserDTO dto);
 
-
-    @Mapping(target = "email", source = "username")
     @Mapping(target = "address", source = "address")
     @Mapping(target = "telephoneNumber", source = "phone")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")

@@ -33,7 +33,13 @@ public class DoctorController {
                 .data("Doctor updated successfully.")
                 .build());
     }
-
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<APIResponse> GetAllDoctorById(@PathVariable Integer id) {
+        var response=doctorService.GetDoctorById(id);
+        return ResponseEntity.ok(APIResponse.builder()
+                .data(response).status(HttpStatus.OK.value()).build());
+    }
     @GetMapping
     public ResponseEntity<APIResponse> GetAllDoctorsForAdmin() {
         var response=doctorService.GetAllDoctors();

@@ -46,7 +46,7 @@ public class UserController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid UserUpdateDTO dto, @PathVariable Integer id) throws EmailAlreadyExistsException {
+    public ResponseEntity<APIResponse> UpdateUser(@RequestBody @Valid UserUpdateDTO dto, @PathVariable Integer id)  {
         UserService.UpdateUser(dto, id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())
