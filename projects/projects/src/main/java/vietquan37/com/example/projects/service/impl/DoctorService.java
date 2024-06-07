@@ -27,7 +27,7 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public void UpdateDoctor(Integer id, DoctorDTO dto) {
-        Doctor doctor=doctorRepository.findByUser_Id(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
         doctorMapper.doctorDTOToDoctor(dto,doctor);
         doctorRepository.save(doctor);
     }
