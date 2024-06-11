@@ -41,7 +41,7 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public void UploadImage(Integer id, MultipartFile image) throws FileException, IOException {
-        Doctor doctor=doctorRepository.findByUser_Id(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
         if (image != null && !image.isEmpty()) {
             String imageUrl = cloudinaryService.uploadFile(image);
             if (doctor.getImageUrl() != null && !doctor.getImageUrl().isEmpty()) {

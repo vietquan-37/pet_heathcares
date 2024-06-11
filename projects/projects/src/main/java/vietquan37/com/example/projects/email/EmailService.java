@@ -18,7 +18,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
 
 
-    @Async
+    @Async("taskExecutor")
     public void sendVerificationEmail(String url, String username) throws MessagingException, UnsupportedEncodingException {
 
         String subject = "Email Verification";
@@ -32,7 +32,7 @@ public class EmailService {
         messageHelper.setText(mailContent, true);
         mailSender.send(message);
     }
-    @Async
+    @Async("taskExecutor")
     public void sendResetPasswordEmail(String url, String username) throws MessagingException, UnsupportedEncodingException {
 
         String subject = "Reset Password";

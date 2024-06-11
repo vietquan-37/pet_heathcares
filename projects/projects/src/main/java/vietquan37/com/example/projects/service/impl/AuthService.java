@@ -90,7 +90,8 @@ public class AuthService implements IAuthService {
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
 
         if (LocalDateTime.now().isAfter(verificationToken.getExpiresAt())) {
-            emailService.sendVerificationEmail(VERIFICATION_URL + token, verificationToken.getUser().getEmail());
+            var tokenResend= generateAndSaveVerifyToken(verificationToken.getUser());
+            emailService.sendVerificationEmail(VERIFICATION_URL + tokenResend, verificationToken.getUser().getEmail());
             throw new RuntimeException("The verification link has expired. A new link has been sent to your email. Please check your email.");
         }
 

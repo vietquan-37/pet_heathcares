@@ -15,6 +15,6 @@ public class APIResponse {
 
     private Integer status;
     private Object data;
-    private Object error;
+        private Object error;
 
 }
