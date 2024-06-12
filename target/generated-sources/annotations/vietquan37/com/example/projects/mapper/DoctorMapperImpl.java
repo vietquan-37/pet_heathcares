@@ -49,30 +49,7 @@ public class DoctorMapperImpl implements DoctorMapper {
     }
 
     @Override
-    public DoctorResponse mapDoctorResponse(Doctor doctor) {
-        if ( doctor == null ) {
-            return null;
-        }
-
-        DoctorResponse.DoctorResponseBuilder doctorResponse = DoctorResponse.builder();
-
-        doctorResponse.fullName( doctorUserFullName( doctor ) );
-        doctorResponse.email( doctorUserEmail( doctor ) );
-        doctorResponse.imageUrl( doctor.getImageUrl() );
-        doctorResponse.specialty( doctor.getSpecialty() );
-        doctorResponse.id( doctor.getId() );
-        doctorResponse.start_time( doctor.getStart_time() );
-        doctorResponse.end_time( doctor.getEnd_time() );
-        List<WorkingDay> list = doctor.getWorkingDay();
-        if ( list != null ) {
-            doctorResponse.workingDay( new ArrayList<WorkingDay>( list ) );
-        }
-
-        return doctorResponse.build();
-    }
-
-    @Override
-    public DoctorResponse mapDoctorResponseForAdmin(Doctor doctor) {
+    public DoctorResponse mapDoctorResponseForInfo(Doctor doctor) {
         if ( doctor == null ) {
             return null;
         }

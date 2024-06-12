@@ -47,7 +47,8 @@ public class AuthService implements IAuthService {
     public void resetPassword(String token, ResetPasswordDTO dto) throws MessagingException, UnsupportedEncodingException, MisMatchPassword {
         Token resetToken = tokenRepository.findByTokenAndType(token, TokenType.RESET).orElseThrow(() -> new EntityNotFoundException("Token not found"));
         if (LocalDateTime.now().isAfter(resetToken.getExpiresAt())) {
-            emailService.sendResetPasswordEmail(RESET_PASSWORD_URL + token, resetToken.getUser().getEmail());
+            var tokenResend= generateAndSaveResetToken(resetToken.getUser());
+            emailService.sendResetPasswordEmail(RESET_PASSWORD_URL + tokenResend, resetToken.getUser().getEmail());
             throw new RuntimeException("The verification link has expired. A new link has been sent to your email. Please check your email.");
         }
         if (!dto.getPassword().equals(dto.getConfirmPassword())) {

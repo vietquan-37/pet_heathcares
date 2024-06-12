@@ -5,13 +5,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.exception.EmailAlreadyExistsException;
+import vietquan37.com.example.projects.exception.MisMatchPassword;
+import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.UserMapper;
+import vietquan37.com.example.projects.payload.request.ChangePasswordDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
 import vietquan37.com.example.projects.payload.response.UserResponse;
@@ -19,7 +24,6 @@ import vietquan37.com.example.projects.repository.CustomerRepository;
 import vietquan37.com.example.projects.repository.DoctorRepository;
 import vietquan37.com.example.projects.repository.UserRepository;
 import vietquan37.com.example.projects.service.IUserService;
-
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -34,6 +38,29 @@ public class UserService implements IUserService {
     private final CustomerRepository customerRepository;
     private final DoctorRepository doctorRepository;
     private  static final int MAX = 5;
+    private final PasswordEncoder encoder;
+
+    @Override
+    public void changePassword(ChangePasswordDTO dto, Authentication authentication) throws UserMistake, MisMatchPassword {
+        User user = ((User) authentication.getPrincipal());
+        if (!encoder.matches(dto.getOldPassword(), user.getPassword())) {
+            throw new UserMistake("wrong old password");
+        }
+        if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+            throw new MisMatchPassword("password is unmatched");
+        }
+        user.setPassword(encoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+
+    }
+
+    @Override
+    public void unDeleteUser(Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        user.setUpdatedAt(LocalDateTime.now());
+        user.setAccountLocked(false);
+        userRepository.save(user);
+    }
 
     @Override
     public void createUser(UserDTO dto) throws EmailAlreadyExistsException {
@@ -72,6 +99,14 @@ public class UserService implements IUserService {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
         return userMapper.mapUserToResponse(user);
     }
+
+    @Override
+    public UserResponse getCustomerInfo(Authentication authentication) {
+        User user = ((User) authentication.getPrincipal());
+        var customer = customerRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        return userMapper.mapCustomerResponse(customer);
+    }
+
 
 
 

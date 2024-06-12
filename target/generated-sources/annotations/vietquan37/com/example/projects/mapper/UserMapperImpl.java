@@ -3,6 +3,7 @@ package vietquan37.com.example.projects.mapper;
 import javax.annotation.processing.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
@@ -87,6 +88,25 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
+    public UserResponse mapCustomerResponse(Customer user) {
+        if ( user == null ) {
+            return null;
+        }
+
+        UserResponse.UserResponseBuilder userResponse = UserResponse.builder();
+
+        userResponse.id( userUserId( user ) );
+        userResponse.name( userUserFullName( user ) );
+        userResponse.email( userUserEmail( user ) );
+        userResponse.password( userUserPassword( user ) );
+        userResponse.phoneNumber( userUserTelephoneNumber( user ) );
+        userResponse.address( userUserAddress( user ) );
+        userResponse.balance( user.getCustomer_balance() );
+
+        return userResponse.build();
+    }
+
+    @Override
     public User mapCreateRequest(UserDTO dto) {
         if ( dto == null ) {
             return null;
@@ -119,5 +139,95 @@ public class UserMapperImpl implements UserMapper {
         existingUser.setFullName( dto.getFullName() );
 
         existingUser.setUpdatedAt( java.time.LocalDateTime.now() );
+    }
+
+    private Integer userUserId(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+        User user = customer.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        Integer id = user.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    private String userUserFullName(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+        User user = customer.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        String fullName = user.getFullName();
+        if ( fullName == null ) {
+            return null;
+        }
+        return fullName;
+    }
+
+    private String userUserEmail(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+        User user = customer.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        String email = user.getEmail();
+        if ( email == null ) {
+            return null;
+        }
+        return email;
+    }
+
+    private String userUserPassword(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+        User user = customer.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        String password = user.getPassword();
+        if ( password == null ) {
+            return null;
+        }
+        return password;
+    }
+
+    private String userUserTelephoneNumber(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+        User user = customer.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        String telephoneNumber = user.getTelephoneNumber();
+        if ( telephoneNumber == null ) {
+            return null;
+        }
+        return telephoneNumber;
+    }
+
+    private String userUserAddress(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+        User user = customer.getUser();
+        if ( user == null ) {
+            return null;
+        }
+        String address = user.getAddress();
+        if ( address == null ) {
+            return null;
+        }
+        return address;
     }
 }

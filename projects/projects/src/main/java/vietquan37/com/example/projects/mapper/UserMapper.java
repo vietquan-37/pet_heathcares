@@ -4,6 +4,7 @@ package vietquan37.com.example.projects.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import vietquan37.com.example.projects.entity.Customer;
 import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.mapper.passwordMap.EncodedMapping;
 import vietquan37.com.example.projects.mapper.passwordMap.PasswordEncoderMapper;
@@ -48,7 +49,14 @@ public interface UserMapper {
     @Mapping(target = "address", source = "address")
     UserResponse mapUserToResponse(User user);
 
-
+    @Mapping(target = "id", source = "user.id")
+    @Mapping(target = "name", source = "user.fullName")
+    @Mapping(target = "email", source = "user.email")
+    @Mapping(target = "password", source = "user.password")
+    @Mapping(target = "phoneNumber", source = "user.telephoneNumber")
+    @Mapping(target = "address", source = "user.address")
+    @Mapping(target = "balance", source = "customer_balance")
+    UserResponse mapCustomerResponse(Customer user);
 
 
     @Mapping(target = "role", source = "role")

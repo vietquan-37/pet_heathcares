@@ -1,11 +1,10 @@
 package vietquan37.com.example.projects.payload.response;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import vietquan37.com.example.projects.enumClass.Role;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -19,8 +18,10 @@ public class UserResponse {
     private String phoneNumber;
     private String address;
     private boolean isDeleted;
+    private BigDecimal balance;
     private Role role;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
 }

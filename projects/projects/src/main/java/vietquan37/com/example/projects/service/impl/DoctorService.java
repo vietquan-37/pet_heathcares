@@ -2,10 +2,12 @@ package vietquan37.com.example.projects.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.config.CloudinaryService;
 import vietquan37.com.example.projects.entity.Doctor;
+import vietquan37.com.example.projects.entity.User;
 import vietquan37.com.example.projects.exception.FileException;
 import vietquan37.com.example.projects.mapper.DoctorMapper;
 import vietquan37.com.example.projects.payload.request.DoctorDTO;
@@ -36,7 +38,7 @@ public class DoctorService implements IDoctorService {
     public List<DoctorResponse> GetAllDoctors() {
        var doctors= doctorRepository.findAllByUser_AccountLockedFalse();
        return doctors.stream()
-               .map(doctorMapper::mapDoctorResponse).collect(Collectors.toList());
+               .map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
     }
 
     @Override
@@ -55,13 +57,20 @@ public class DoctorService implements IDoctorService {
     @Override
     public List<DoctorResponse> GetAllDoctorForAdmin() {
         var doctors= doctorRepository.findAll();
-        return doctors.stream().map(doctorMapper::mapDoctorResponseForAdmin).collect(Collectors.toList());
+        return doctors.stream().map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
     }
 
     @Override
     public DoctorResponse GetDoctorById(Integer id) {
         Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
-        return doctorMapper.mapDoctorResponseForAdmin(doctor);
+        return doctorMapper.mapDoctorResponseForInfo(doctor);
 
+    }
+
+    @Override
+    public DoctorResponse GetDoctorInfo(Authentication authentication) {
+        User user = ((User) authentication.getPrincipal());
+        var doctor=doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        return doctorMapper.mapDoctorResponseForInfo(doctor);
     }
 }
