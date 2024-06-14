@@ -76,7 +76,7 @@ public class PetController {
 
     }
     @PostMapping(value = "/image/{id}", consumes = "multipart/form-data")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<?> uploadPetImage(
             @PathVariable Integer id,
             Authentication connectedUser,
