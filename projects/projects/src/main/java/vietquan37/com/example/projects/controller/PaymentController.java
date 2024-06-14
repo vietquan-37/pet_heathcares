@@ -30,15 +30,33 @@ public class PaymentController {
     public ResponseEntity<APIResponse> successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         try {
             Payment payment = service.executePayment(paymentId, payerId);
-            if (payment.getState().equals("approved")) {
+            if ("approved".equals(payment.getState())) {
                 service.updatePaymentStatus(paymentId);
-
-                return ResponseEntity.ok(APIResponse.builder().status(HttpStatus.OK.value()).data("Payment successful").build());
+                return ResponseEntity.ok(APIResponse.builder()
+                        .status(HttpStatus.OK.value())
+                        .data("Payment successful")
+                        .build());
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(APIResponse.builder()
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                                .error("Payment not approved.")
+                                .build());
             }
         } catch (PayPalRESTException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).data("Error executing payment.").build());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(APIResponse.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .error("Error executing payment: " + e.getMessage())
+                            .build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(APIResponse.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .error("An unexpected error occurred: " + e.getMessage())
+                            .build());
         }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value()).data("Payment not approved.").build());
     }
+
 }
 
