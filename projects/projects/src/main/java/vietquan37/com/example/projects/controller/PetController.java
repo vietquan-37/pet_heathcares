@@ -29,10 +29,10 @@ public class PetController {
     @PostMapping( "/create" )
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> create(@Valid @RequestBody PetDTO dto, Authentication connectedUser) {
-        petService.CreatePet(dto, connectedUser);
+      var id=  petService.CreatePet(dto, connectedUser);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(APIResponse.builder().status(HttpStatus.CREATED.value())
-                        .data("Pet created successfully").build());
+                        .data(id).build());
     }
 
     @GetMapping

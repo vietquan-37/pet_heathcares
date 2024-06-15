@@ -48,13 +48,14 @@ public class PetService implements IPetService {
     private final AppointmentRepository appointmentRepository;
 
     @Override
-    public void CreatePet(PetDTO dto, Authentication connectedUser) {
+    public Integer CreatePet(PetDTO dto, Authentication connectedUser) {
         User user = (User) connectedUser.getPrincipal();
         Pet pet = mapper.mapDto(dto);
         Customer customer = customerRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
         pet.setCustomer(customer);
         petRepository.save(pet);
+        return pet.getId();
     }
 
     @Override

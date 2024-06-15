@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IPetService {
-    void CreatePet(PetDTO dto, Authentication connectedUser);
+    Integer CreatePet(PetDTO dto, Authentication connectedUser);
     Page<PetResponse>GetAllPets(int page);
     List<PetResponse> GetAllPetsByUser( Authentication connectedUser);
     void UpdatePet(Integer id,PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException;
