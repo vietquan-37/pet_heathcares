@@ -8,7 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import vietquan37.com.example.projects.entity.Appointment;
+
 import vietquan37.com.example.projects.entity.Payments;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.repository.AppointmentRepository;

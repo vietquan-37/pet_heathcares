@@ -19,9 +19,11 @@ import vietquan37.com.example.projects.mapper.UserMapper;
 import vietquan37.com.example.projects.payload.request.ChangePasswordDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
+import vietquan37.com.example.projects.payload.response.DashboardResponse;
 import vietquan37.com.example.projects.payload.response.UserResponse;
 import vietquan37.com.example.projects.repository.CustomerRepository;
 import vietquan37.com.example.projects.repository.DoctorRepository;
+import vietquan37.com.example.projects.repository.PetRepository;
 import vietquan37.com.example.projects.repository.UserRepository;
 import vietquan37.com.example.projects.service.IUserService;
 
@@ -39,6 +41,7 @@ public class UserService implements IUserService {
     private final DoctorRepository doctorRepository;
     private  static final int MAX = 5;
     private final PasswordEncoder encoder;
+    private final PetRepository petRepository;
 
     @Override
     public void changePassword(ChangePasswordDTO dto, Authentication authentication) throws UserMistake, MisMatchPassword {
@@ -60,6 +63,17 @@ public class UserService implements IUserService {
         user.setUpdatedAt(LocalDateTime.now());
         user.setAccountLocked(false);
         userRepository.save(user);
+    }
+
+    @Override
+    public DashboardResponse dashboard() {
+       var totalCustomer= customerRepository.count();
+       var totalDoctor= doctorRepository.count();
+       var totalStaff= userRepository.countAllByRole(Role.STAFF);
+       var totalPet=petRepository.count();
+
+
+        return DashboardResponse.builder().totalCustomer(totalCustomer).totalDoctor(totalDoctor).totalPet(totalPet).totalStaff(totalStaff).build();
     }
 
     @Override

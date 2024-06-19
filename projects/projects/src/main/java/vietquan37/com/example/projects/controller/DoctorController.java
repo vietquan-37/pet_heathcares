@@ -11,13 +11,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.exception.FileException;
+import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.response.APIResponse;
 
 import vietquan37.com.example.projects.service.IDoctorService;
 
 import java.io.IOException;
-
+import java.time.LocalDate;
 
 
 @RestController
@@ -58,6 +59,13 @@ public class DoctorController {
     @PreAuthorize("hasAnyRole('DOCTOR')")
     public ResponseEntity<APIResponse> GetAllDoctorInfo(Authentication authentication) {
         var response=doctorService.GetDoctorInfo(authentication);
+        return ResponseEntity.ok(APIResponse.builder()
+                .data(response).status(HttpStatus.OK.value()).build());
+    }
+    @GetMapping("/availability")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<APIResponse> GetAllDoctorAvailability(@RequestParam LocalDate date) throws UserMistake {
+        var response=doctorService.GetDoctorAvailability(date);
         return ResponseEntity.ok(APIResponse.builder()
                 .data(response).status(HttpStatus.OK.value()).build());
     }

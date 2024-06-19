@@ -8,6 +8,7 @@ import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.ChangePasswordDTO;
 import vietquan37.com.example.projects.payload.request.UserDTO;
 import vietquan37.com.example.projects.payload.request.UserUpdateDTO;
+import vietquan37.com.example.projects.payload.response.DashboardResponse;
 import vietquan37.com.example.projects.payload.response.UserResponse;
 
 
@@ -22,5 +23,6 @@ UserResponse getUserById(Integer id);
 UserResponse getCustomerInfo(Authentication authentication);
 void changePassword(ChangePasswordDTO  dto,Authentication authentication) throws UserMistake, MisMatchPassword;
 void unDeleteUser(Integer id);
+DashboardResponse dashboard();
 
 }

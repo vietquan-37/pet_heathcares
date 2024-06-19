@@ -32,6 +32,7 @@ public class Doctor {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<HospitalizedPet> hospitalizations;
     @Convert(converter = WorkingDayListConverter.class)
+
     private List<WorkingDay> workingDay;
 
 }

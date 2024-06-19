@@ -15,4 +15,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Integer> , PagingAndSortingRepository<User,Integer> {
     Optional<User> findByEmail(String email);
     Page<User>findAllByRoleIn(List<Role> roles,Pageable pageable);
+    long countAllByRole(Role role);
 }

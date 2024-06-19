@@ -97,4 +97,11 @@ public class UserController {
 
 
     }
+    @GetMapping("/statistic")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<APIResponse> getStatistic() {
+        var response = UserService.dashboard();
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().data(response).status(HttpStatus.OK.value()).build());
+    }
+
 }

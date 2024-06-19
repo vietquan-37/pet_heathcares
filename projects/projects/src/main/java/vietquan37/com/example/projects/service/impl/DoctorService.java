@@ -8,7 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.config.CloudinaryService;
 import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.entity.User;
+import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.exception.FileException;
+import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.DoctorMapper;
 import vietquan37.com.example.projects.payload.request.DoctorDTO;
 import vietquan37.com.example.projects.payload.response.DoctorResponse;
@@ -16,6 +18,7 @@ import vietquan37.com.example.projects.repository.DoctorRepository;
 import vietquan37.com.example.projects.service.IDoctorService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,5 +75,20 @@ public class DoctorService implements IDoctorService {
         User user = ((User) authentication.getPrincipal());
         var doctor=doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
         return doctorMapper.mapDoctorResponseForInfo(doctor);
+    }
+
+    @Override
+    public List<DoctorResponse> GetDoctorAvailability(LocalDate date) throws UserMistake {
+        if(date.isBefore(LocalDate.now())) {
+            throw new UserMistake("can not choose a past date");
+        }
+        WorkingDay appointmentDay = WorkingDay.valueOf(date.getDayOfWeek().name());
+      var doctor=  doctorRepository.findAllBySpecificWorkingDayAndUser_AccountLockedFalse(appointmentDay.name());
+
+      if(doctor.isEmpty()){
+          throw new EntityNotFoundException("There is no doctor associated with the given date");
+      }
+        return doctor.stream().map(doctorMapper::mapDoctorResponseForInfo)
+                .collect(Collectors.toList());
     }
 }
