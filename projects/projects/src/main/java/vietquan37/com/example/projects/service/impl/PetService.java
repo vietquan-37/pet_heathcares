@@ -69,6 +69,12 @@ public class PetService implements IPetService {
     }
 
     @Override
+    public List<PetResponse> GetAllPets() {
+        List<Pet> pets = petRepository.findAllByDeletedIsFalse();
+        return pets.stream().map(mapper::mapToPetResponse).collect(Collectors.toList());
+    }
+
+    @Override
     public List<PetResponse> GetAllPetsByUser(Authentication connectedUser) {
         User user = ((User) connectedUser.getPrincipal());
         Customer customer = customerRepository.findByUser_Id(user.getId())

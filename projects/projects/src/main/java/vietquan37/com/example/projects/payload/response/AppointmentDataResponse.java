@@ -19,6 +19,9 @@ import java.time.LocalDateTime;
 public class AppointmentDataResponse {
     private Integer id;
     private LocalDate appointmentDate;
+    private Integer petId;
+    private Integer doctorId;
+    private Integer serviceId;
     private String customerName;
     private String petName;
     private String doctorName;

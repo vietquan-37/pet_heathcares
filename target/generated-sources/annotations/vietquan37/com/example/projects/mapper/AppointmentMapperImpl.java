@@ -47,6 +47,9 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         appointmentDataResponse.id( appointment.getId() );
         appointmentDataResponse.appointmentDate( appointment.getAppointmentDate() );
         appointmentDataResponse.petName( appointmentPetName( appointment ) );
+        appointmentDataResponse.petId( appointmentPetId( appointment ) );
+        appointmentDataResponse.doctorId( appointmentDoctorId( appointment ) );
+        appointmentDataResponse.serviceId( appointmentServiceId( appointment ) );
         appointmentDataResponse.doctorName( appointmentDoctorUserFullName( appointment ) );
         appointmentDataResponse.appointmentPrice( appointment.getAppointmentPrice() );
         appointmentDataResponse.refund_payments( appointment.getRefund_payments() );
@@ -72,6 +75,51 @@ public class AppointmentMapperImpl implements AppointmentMapper {
             return null;
         }
         return name;
+    }
+
+    private Integer appointmentPetId(Appointment appointment) {
+        if ( appointment == null ) {
+            return null;
+        }
+        Pet pet = appointment.getPet();
+        if ( pet == null ) {
+            return null;
+        }
+        Integer id = pet.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    private Integer appointmentDoctorId(Appointment appointment) {
+        if ( appointment == null ) {
+            return null;
+        }
+        Doctor doctor = appointment.getDoctor();
+        if ( doctor == null ) {
+            return null;
+        }
+        Integer id = doctor.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    private Integer appointmentServiceId(Appointment appointment) {
+        if ( appointment == null ) {
+            return null;
+        }
+        Services service = appointment.getService();
+        if ( service == null ) {
+            return null;
+        }
+        Integer id = service.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
     }
 
     private String appointmentDoctorUserFullName(Appointment appointment) {

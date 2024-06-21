@@ -43,6 +43,14 @@ public class PetController {
                 .ok(APIResponse.builder().data(response)
                         .status(HttpStatus.OK.value()).build());
     }
+    @GetMapping("/staff")
+    @PreAuthorize("hasAnyRole('STAFF','ADMIN')")
+    public ResponseEntity<APIResponse> getAllPets() {
+        var response=petService.GetAllPets();
+        return ResponseEntity
+                .ok(APIResponse.builder().data(response)
+                        .status(HttpStatus.OK.value()).build());
+    }
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> getAllPetByUser( Authentication connectedUser) {

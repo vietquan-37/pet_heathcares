@@ -14,6 +14,7 @@ import java.util.List;
 public interface IPetService {
     Integer CreatePet(PetDTO dto, Authentication connectedUser);
     Page<PetResponse>GetAllPets(int page);
+    List<PetResponse>GetAllPets();
     List<PetResponse> GetAllPetsByUser( Authentication connectedUser);
     void UpdatePet(Integer id,PetDTO dto, Authentication connectedUser) throws OperationNotPermittedException;
     void DeletePet(Integer id, Authentication connectedUser) throws OperationNotPermittedException, UserMistake;

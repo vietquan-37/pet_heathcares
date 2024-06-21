@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Integer>, PagingAndSortingRepository<Pet, Integer> {
-
+    List<Pet> findAllByDeletedIsFalse();
     Page<Pet> findAllByDeletedIsFalse(Pageable pageable);
     List<Pet>findAllByCustomerAndDeletedIsFalse(Customer customer);
    Optional<Pet>findByIdAndDeletedIsFalse(Integer petId);
