@@ -64,7 +64,7 @@ public class HospitalizedPetController {
                 .data(responses).build());
     }
 
-    @GetMapping("delete/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('STAFF', 'DOCTOR')")
     public ResponseEntity<APIResponse> getById(@PathVariable Integer id) {
         HospitalizedPetResponse response = hospitalizedPetService.getById(id);
@@ -82,7 +82,7 @@ public class HospitalizedPetController {
                 .data(responses).build());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('STAFF')")
     public ResponseEntity<APIResponse> deleteHospitalizedPet(@PathVariable Integer id) throws OperationNotPermittedException {
         hospitalizedPetService.deleteHospitalizedPet(id);
