@@ -3,6 +3,7 @@ package vietquan37.com.example.projects.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
+import vietquan37.com.example.projects.enumClass.TimeFrame;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,7 +11,8 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -34,6 +36,8 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
+    @Enumerated(EnumType.STRING)
+    private TimeFrame timeFrame;
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
     private BigDecimal appointmentPrice;

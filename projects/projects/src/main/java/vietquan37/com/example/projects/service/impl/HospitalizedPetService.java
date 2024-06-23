@@ -10,13 +10,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
 import vietquan37.com.example.projects.config.PayPalService;
 import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.enumClass.CageStatus;
 import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
-
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.HospitalizedPetMapper;
 import vietquan37.com.example.projects.payload.request.HospitalizedPetDTO;
@@ -178,6 +176,24 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         }
        return handlePayment(hospitalizedPet);
     }
+
+    @Override
+    public List<HospitalizedPetResponse> getAllHospitalizedPetByPetId(Authentication authentication, Integer id) throws OperationNotPermittedException {
+        List<HospitalizedPet> hospitalizedPets = repository.findAllByPetIdAndDischargeDateIsNotNullAndDeletedIsFalse(id);
+        User currentUser = (User) authentication.getPrincipal();
+
+        if (!hospitalizedPets.isEmpty()) {
+            User petOwner = hospitalizedPets.get(0).getPet().getCustomer().getUser();
+            if (!Objects.equals(petOwner.getId(), currentUser.getId())) {
+                throw new OperationNotPermittedException("You are not allowed to view this pet's care details.");
+            }
+        }
+
+        return hospitalizedPets.stream()
+                .map(mapper::mapForResponse)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public void dischargeHospitalizedPet(Integer id, Authentication authentication) throws OperationNotPermittedException {

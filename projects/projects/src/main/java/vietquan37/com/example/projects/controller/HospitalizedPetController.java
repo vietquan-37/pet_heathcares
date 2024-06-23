@@ -99,6 +99,14 @@ public class HospitalizedPetController {
                 .status(HttpStatus.OK.value())
                 .data(responses).build());
     }
+    @GetMapping("/record/{id}")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<APIResponse> getAllPetRecordById(Authentication authentication,Integer id) throws OperationNotPermittedException {
+        List<HospitalizedPetResponse> responses = hospitalizedPetService.getAllHospitalizedPetByPetId(authentication,id);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(responses).build());
+    }
 
     @GetMapping("/services/{id}")
     @PreAuthorize("hasAnyRole('STAFF','USER')")

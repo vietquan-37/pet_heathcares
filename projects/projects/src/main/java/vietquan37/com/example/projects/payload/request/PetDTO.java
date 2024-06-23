@@ -1,13 +1,17 @@
 package vietquan37.com.example.projects.payload.request;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import vietquan37.com.example.projects.enumClass.Gender;
+
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class PetDTO {
     @NotBlank

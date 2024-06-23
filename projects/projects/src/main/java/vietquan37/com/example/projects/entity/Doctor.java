@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.utils.converter.WorkingDayListConverter;
 
-
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,16 +22,15 @@ public class Doctor {
     private Integer id;
     private String specialty;
     private String imageUrl;
+    private LocalTime startTime;
+    private LocalTime endTime;
     @OneToOne
     private User user;
-    private LocalTime start_time;
-    private LocalTime end_time;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<Appointment> appointments;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<HospitalizedPet> hospitalizations;
     @Convert(converter = WorkingDayListConverter.class)
-
     private List<WorkingDay> workingDay;
 
 }

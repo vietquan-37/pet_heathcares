@@ -27,6 +27,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         Appointment.AppointmentBuilder appointment = Appointment.builder();
 
         appointment.appointmentDate( dto.getAppointmentDate() );
+        appointment.timeFrame( dto.getTimeFrame() );
 
         appointment.appointmentStatus( AppointmentStatus.PENDING );
         appointment.updatedAt( java.time.LocalDateTime.now() );
@@ -55,6 +56,7 @@ public class AppointmentMapperImpl implements AppointmentMapper {
         appointmentDataResponse.refund_payments( appointment.getRefund_payments() );
         appointmentDataResponse.service( appointmentServiceName( appointment ) );
         appointmentDataResponse.appointmentStatus( appointment.getAppointmentStatus() );
+        appointmentDataResponse.timeFrame( appointment.getTimeFrame() );
         appointmentDataResponse.deleted( appointment.isDeleted() );
         appointmentDataResponse.createdAt( appointment.getCreatedAt() );
         appointmentDataResponse.updatedAt( appointment.getUpdatedAt() );

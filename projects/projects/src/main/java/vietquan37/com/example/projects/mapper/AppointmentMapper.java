@@ -13,6 +13,7 @@ public interface AppointmentMapper {
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "deleted", constant = "false")
+
     Appointment mapDTO(AppointmentDTO dto);
 
     @Mapping(target = "id", source = "id")
@@ -26,6 +27,7 @@ public interface AppointmentMapper {
     @Mapping(target = "refund_payments", source = "refund_payments")
     @Mapping(target = "service", source = "service.name")
     @Mapping(target = "appointmentStatus", source = "appointmentStatus")
+    @Mapping(target = "timeFrame", source = "timeFrame")
     AppointmentDataResponse mapAppointmentResponseForUser(Appointment appointment);
 
 }

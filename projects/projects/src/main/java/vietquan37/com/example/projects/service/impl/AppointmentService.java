@@ -86,6 +86,12 @@ public class AppointmentService implements IAppointmentService {
         if (isDoctorAvailable(doctor, dto.getAppointmentDate())) {
             throw new DoctorNotAvailableException("Doctor is not available at the specified time");
         }
+        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(doctor.getId(),dto.getTimeFrame(),dto.getAppointmentDate())>=3&&(!dto.getAppointmentDate().equals(appointment.getAppointmentDate())||!dto.getTimeFrame().equals(appointment.getTimeFrame()))){
+            throw new DoctorNotAvailableException("Doctor is not available at the specified time");
+        }
+
+        appointment.setTimeFrame(dto.getTimeFrame());
+        appointment.setAppointmentDate(dto.getAppointmentDate());
         appointment.setAppointmentPrice(service.getPrice());
         appointment.setService(service);
         appointment.setDoctor(doctor);
@@ -132,9 +138,13 @@ public class AppointmentService implements IAppointmentService {
         if (isDoctorAvailable(doctor, dto.getAppointmentDate())) {
             throw new DoctorNotAvailableException("Doctor is not available at the specified time");
         }
+        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(doctor.getId(),dto.getTimeFrame(),dto.getAppointmentDate())>=3){
+            throw new DoctorNotAvailableException("Doctor is not available at the specified time");
+        }
 
 
         Appointment appointment = mapper.mapDTO(dto);
+        appointment.setTimeFrame(dto.getTimeFrame());
         appointment.setCustomer(customer);
         appointment.setDoctor(doctor);
         appointment.setService(service);

@@ -8,12 +8,15 @@ import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.config.CloudinaryService;
 import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.entity.User;
+import vietquan37.com.example.projects.enumClass.TimeFrame;
 import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.exception.FileException;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.DoctorMapper;
 import vietquan37.com.example.projects.payload.request.DoctorDTO;
+import vietquan37.com.example.projects.payload.request.DoctorSearchDTO;
 import vietquan37.com.example.projects.payload.response.DoctorResponse;
+import vietquan37.com.example.projects.repository.AppointmentRepository;
 import vietquan37.com.example.projects.repository.DoctorRepository;
 import vietquan37.com.example.projects.service.IDoctorService;
 
@@ -28,25 +31,25 @@ public class DoctorService implements IDoctorService {
     private final DoctorRepository doctorRepository;
     private final DoctorMapper doctorMapper;
     private final CloudinaryService cloudinaryService;
+    private final AppointmentRepository appointmentRepository;
 
 
     @Override
     public void UpdateDoctor(Integer id, DoctorDTO dto) {
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
-        doctorMapper.doctorDTOToDoctor(dto,doctor);
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        doctorMapper.doctorDTOToDoctor(dto, doctor);
         doctorRepository.save(doctor);
     }
 
     @Override
     public List<DoctorResponse> GetAllDoctors() {
-       var doctors= doctorRepository.findAllByUser_AccountLockedFalse();
-       return doctors.stream()
-               .map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
+        var doctors = doctorRepository.findAllByUser_AccountLockedFalse();
+        return doctors.stream().map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
     }
 
     @Override
     public void UploadImage(Integer id, MultipartFile image) throws FileException, IOException {
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
         if (image != null && !image.isEmpty()) {
             String imageUrl = cloudinaryService.uploadFile(image);
             if (doctor.getImageUrl() != null && !doctor.getImageUrl().isEmpty()) {
@@ -59,13 +62,13 @@ public class DoctorService implements IDoctorService {
 
     @Override
     public List<DoctorResponse> GetAllDoctorForAdmin() {
-        var doctors= doctorRepository.findAll();
+        var doctors = doctorRepository.findAll();
         return doctors.stream().map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
     }
 
     @Override
     public DoctorResponse GetDoctorById(Integer id) {
-        Doctor doctor=doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
         return doctorMapper.mapDoctorResponseForInfo(doctor);
 
     }
@@ -73,22 +76,21 @@ public class DoctorService implements IDoctorService {
     @Override
     public DoctorResponse GetDoctorInfo(Authentication authentication) {
         User user = ((User) authentication.getPrincipal());
-        var doctor=doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
+        var doctor = doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Doctor not found"));
         return doctorMapper.mapDoctorResponseForInfo(doctor);
     }
 
     @Override
-    public List<DoctorResponse> GetDoctorAvailability(LocalDate date) throws UserMistake {
-        if(date.isBefore(LocalDate.now())) {
+    public List<DoctorResponse> GetDoctorAvailability(LocalDate appointmentDate, TimeFrame timeFrame) throws UserMistake {
+        if (appointmentDate.isBefore(LocalDate.now())) {
             throw new UserMistake("can not choose a past date");
         }
-        WorkingDay appointmentDay = WorkingDay.valueOf(date.getDayOfWeek().name());
-      var doctor=  doctorRepository.findAllBySpecificWorkingDayAndUser_AccountLockedFalse(appointmentDay.name());
-
-      if(doctor.isEmpty()){
-          throw new EntityNotFoundException("There is no doctor associated with the given date");
-      }
-        return doctor.stream().map(doctorMapper::mapDoctorResponseForInfo)
-                .collect(Collectors.toList());
+        WorkingDay appointmentDay = WorkingDay.valueOf(appointmentDate.getDayOfWeek().name());
+        var doctor = doctorRepository.findAllBySpecificWorkingDayAndUser_AccountLockedFalse(appointmentDay.name());
+        doctor.removeIf(doc -> appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(doc.getId(), timeFrame,appointmentDate) >= 3);
+        if (doctor.isEmpty()) {
+            throw new EntityNotFoundException("There is no doctor associated with the given date");
+        }
+        return doctor.stream().map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
     }
 }

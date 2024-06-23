@@ -1,6 +1,5 @@
 package vietquan37.com.example.projects.service;
 
-import vietquan37.com.example.projects.entity.Cage;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.CageDTO;
 import vietquan37.com.example.projects.payload.response.CageResponse;
@@ -14,5 +13,6 @@ public interface ICageService {
     CageResponse getCageById(Integer id) ;
     List<CageResponse> getAllCage();
     List<CageResponse> getAllCageForStaff();
+
 
 }

@@ -1,17 +1,16 @@
 package vietquan37.com.example.projects.payload.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import vietquan37.com.example.projects.enumClass.AppointmentStatus;
+import vietquan37.com.example.projects.enumClass.TimeFrame;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,6 +18,7 @@ import java.time.LocalDateTime;
 public class AppointmentDataResponse {
     private Integer id;
     private LocalDate appointmentDate;
+    private TimeFrame timeFrame;
     private Integer petId;
     private Integer doctorId;
     private Integer serviceId;

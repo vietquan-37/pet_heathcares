@@ -65,6 +65,8 @@ public class CageService implements ICageService {
         return cages.stream().map(cageMapper::mapResponse).collect(Collectors.toList());
     }
 
+
+
     @Override
     public CageResponse getCageById(Integer id) {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("cage not found"));

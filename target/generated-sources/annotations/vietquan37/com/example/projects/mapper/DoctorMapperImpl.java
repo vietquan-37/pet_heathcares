@@ -24,8 +24,6 @@ public class DoctorMapperImpl implements DoctorMapper {
         }
 
         doctor.setSpecialty( doctorDTO.getSpecialty() );
-        doctor.setStart_time( doctorDTO.getStart_time() );
-        doctor.setEnd_time( doctorDTO.getEnd_time() );
         if ( doctor.getWorkingDay() != null ) {
             List<WorkingDay> list = doctorDTO.getWorkingDay();
             if ( list != null ) {
@@ -46,6 +44,9 @@ public class DoctorMapperImpl implements DoctorMapper {
             doctor.setUser( User.builder().build() );
         }
         doctorDTOToUser( doctorDTO, doctor.getUser() );
+
+        doctor.setStartTime( java.time.LocalTime.of(8, 0) );
+        doctor.setEndTime( java.time.LocalTime.of(17, 0) );
     }
 
     @Override
@@ -58,11 +59,11 @@ public class DoctorMapperImpl implements DoctorMapper {
 
         doctorResponse.id( doctor.getId() );
         doctorResponse.fullName( doctorUserFullName( doctor ) );
+        doctorResponse.startTime( doctor.getStartTime() );
+        doctorResponse.endTime( doctor.getEndTime() );
         doctorResponse.email( doctorUserEmail( doctor ) );
         doctorResponse.imageUrl( doctor.getImageUrl() );
         doctorResponse.specialty( doctor.getSpecialty() );
-        doctorResponse.start_time( doctor.getStart_time() );
-        doctorResponse.end_time( doctor.getEnd_time() );
         List<WorkingDay> list = doctor.getWorkingDay();
         if ( list != null ) {
             doctorResponse.workingDay( new ArrayList<WorkingDay>( list ) );

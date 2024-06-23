@@ -1,12 +1,14 @@
 package vietquan37.com.example.projects.payload.request;
 
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class UpdatePetServiceDTO {
     @Size(min = 1)

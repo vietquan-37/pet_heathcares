@@ -3,7 +3,6 @@ package vietquan37.com.example.projects.service;
 import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
-import vietquan37.com.example.projects.entity.HospitalizedPet;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.payload.request.HospitalizedPetDTO;
@@ -26,7 +25,7 @@ public interface IHospitalizedPetService {
     List<HospitalizedPetResponse>  getAllForCustomer(Authentication authentication);
     List<HospitalizedServiceResponse>getAllServiceById(Integer id);
     PaymentResponse payHospitalizedFee(Integer id,Authentication authentication) throws OperationNotPermittedException, PayPalRESTException, UserMistake;
-
+    List<HospitalizedPetResponse> getAllHospitalizedPetByPetId(Authentication authentication, Integer id) throws OperationNotPermittedException;
     void dischargeHospitalizedPet(Integer id,Authentication authentication) throws OperationNotPermittedException;
     void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException;
 

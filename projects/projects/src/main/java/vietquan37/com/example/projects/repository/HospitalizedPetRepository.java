@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import vietquan37.com.example.projects.entity.HospitalizedPet;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +18,5 @@ public interface HospitalizedPetRepository extends JpaRepository<HospitalizedPet
     List<HospitalizedPet> findAllByPetCustomerUserIdAndDeletedIsFalse(Integer userId);
     Page<HospitalizedPet>findAllByDeletedIsFalse(Pageable pageable);
     Optional<HospitalizedPet>  findByPaymentsPaymentId(String id);
+    List<HospitalizedPet> findAllByPetIdAndDischargeDateIsNotNullAndDeletedIsFalse(Integer petId);
 }

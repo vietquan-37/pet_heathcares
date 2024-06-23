@@ -1,12 +1,13 @@
 package vietquan37.com.example.projects.payload.request;
 
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import vietquan37.com.example.projects.enumClass.Role;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class UserDTO {
 

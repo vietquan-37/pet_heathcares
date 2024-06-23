@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import vietquan37.com.example.projects.entity.Appointment;
+import vietquan37.com.example.projects.enumClass.TimeFrame;
 
 
 import java.time.LocalDate;
@@ -20,4 +21,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     Page<Appointment> findAllByCustomerIdAndDeletedIsFalse(Integer customerId, Pageable pageable);
     Page<Appointment> findAllByDeletedIsFalse( Pageable pageable);
     int countAppointmentByPetIdAndAppointmentDateAfter(Integer petId, LocalDate appointmentDate);
+    int countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(Integer doctorId, TimeFrame timeFrame,LocalDate date);
 }
