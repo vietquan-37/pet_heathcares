@@ -104,11 +104,13 @@ public class HospitalizedPetService implements IHospitalizedPetService {
 
     @Override
     public Page<HospitalizedPetResponse> getAllForDoctor(int page, Authentication authentication) {
+        User user = ((User) authentication.getPrincipal());
+       var doctor= doctorRepository.findByUser_Id(user.getId()).orElseThrow(()->new EntityNotFoundException("doctor not found"));
         if (page < 0) {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<HospitalizedPet>pet=repository.findAllByDeletedIsFalse(pageable);
+        Page<HospitalizedPet>pet=repository.findAllByDeletedIsFalseAndDoctorId(pageable,doctor.getId());
         return pet.map(mapper::mapForDoctor);
     }
 

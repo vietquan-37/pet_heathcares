@@ -17,6 +17,7 @@ public interface HospitalizedPetRepository extends JpaRepository<HospitalizedPet
     Optional<HospitalizedPet> findByPetIdAndDeletedIsFalseAndDischargeDate(Integer id,LocalDate date);
     List<HospitalizedPet> findAllByPetCustomerUserIdAndDeletedIsFalse(Integer userId);
     Page<HospitalizedPet>findAllByDeletedIsFalse(Pageable pageable);
+    Page<HospitalizedPet>findAllByDeletedIsFalseAndDoctorId(Pageable pageable,Integer id);
     Optional<HospitalizedPet>  findByPaymentsPaymentId(String id);
     List<HospitalizedPet> findAllByPetIdAndDischargeDateIsNotNullAndDeletedIsFalse(Integer petId);
 }
