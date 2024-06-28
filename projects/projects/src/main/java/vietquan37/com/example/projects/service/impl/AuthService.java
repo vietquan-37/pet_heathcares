@@ -40,7 +40,7 @@ public class AuthService implements IAuthService {
     private final AuthenticationManager authenticationManager;
 
     private static final String VERIFICATION_URL = "http://localhost:8080/api/v1/auth/verify-email?token=";
-    private static final String RESET_PASSWORD_URL = "http://localhost:3000/api/v1/auth/reset-password?token=";
+    private static final String RESET_PASSWORD_URL = "http://localhost:3000/reset-password?token=";
     private final PasswordEncoder passwordEncoder;
 
     @Override
