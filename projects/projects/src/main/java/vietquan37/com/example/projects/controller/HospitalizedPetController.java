@@ -110,8 +110,8 @@ public class HospitalizedPetController {
 
     @GetMapping("/services/{id}")
     @PreAuthorize("hasAnyRole('STAFF','USER')")
-    public ResponseEntity<APIResponse> getAllServiceById(@PathVariable Integer id) {
-        List<HospitalizedServiceResponse> responses = hospitalizedPetService.getAllServiceById(id);
+    public ResponseEntity<APIResponse> getAllServiceById(@PathVariable Integer id,Authentication authentication,@RequestParam(defaultValue = "0") int page) throws OperationNotPermittedException {
+        Page<HospitalizedServiceResponse> responses = hospitalizedPetService.getAllServiceById(id,authentication,page);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())
                 .data(responses).build());

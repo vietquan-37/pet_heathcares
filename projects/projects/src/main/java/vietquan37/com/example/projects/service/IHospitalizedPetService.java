@@ -11,6 +11,7 @@ import vietquan37.com.example.projects.payload.request.UpdatePetServiceDTO;
 import vietquan37.com.example.projects.payload.response.HospitalizedPetResponse;
 import vietquan37.com.example.projects.payload.response.HospitalizedServiceResponse;
 import vietquan37.com.example.projects.payload.response.PaymentResponse;
+import vietquan37.com.example.projects.payload.response.ServiceHospitalizedResponse;
 
 import java.util.List;
 
@@ -23,11 +24,10 @@ public interface IHospitalizedPetService {
     HospitalizedPetResponse getById(Integer id);
     Page<HospitalizedPetResponse> getAllForStaff(int page);
     List<HospitalizedPetResponse>  getAllForCustomer(Authentication authentication);
-    List<HospitalizedServiceResponse>getAllServiceById(Integer id);
+    Page<HospitalizedServiceResponse>getAllServiceById(Integer id,Authentication authentication,int page) throws OperationNotPermittedException;
     PaymentResponse payHospitalizedFee(Integer id,Authentication authentication) throws OperationNotPermittedException, PayPalRESTException, UserMistake;
     List<HospitalizedPetResponse> getAllHospitalizedPetByPetId(Authentication authentication, Integer id) throws OperationNotPermittedException;
     void dischargeHospitalizedPet(Integer id,Authentication authentication) throws OperationNotPermittedException;
     void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException;
-
 
 }

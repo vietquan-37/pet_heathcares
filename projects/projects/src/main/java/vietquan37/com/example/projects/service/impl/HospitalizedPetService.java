@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.config.PayPalService;
 import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.enumClass.CageStatus;
+import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.exception.UserMistake;
@@ -23,6 +24,7 @@ import vietquan37.com.example.projects.payload.request.UpdatePetServiceDTO;
 import vietquan37.com.example.projects.payload.response.HospitalizedPetResponse;
 import vietquan37.com.example.projects.payload.response.HospitalizedServiceResponse;
 import vietquan37.com.example.projects.payload.response.PaymentResponse;
+import vietquan37.com.example.projects.payload.response.ServiceHospitalizedResponse;
 import vietquan37.com.example.projects.repository.*;
 import vietquan37.com.example.projects.service.IHospitalizedPetService;
 
@@ -149,6 +151,8 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         repository.save(hospitalizedPet);
     }
 
+
+
     @Override
     public List<HospitalizedPetResponse> getAllForCustomer(Authentication authentication) {
         User user = ((User) authentication.getPrincipal());
@@ -157,9 +161,19 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     }
 
     @Override
-    public List<HospitalizedServiceResponse> getAllServiceById(Integer id) {
-        List<HospitalizedPetServices> services=hospitalizedPetServiceRepository.findAll();
-        return services.stream().map(mapper::mapForService).collect(Collectors.toList());
+    public Page<HospitalizedServiceResponse> getAllServiceById(Integer id,Authentication authentication, int page) throws OperationNotPermittedException {
+        var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
+        User user = ((User) authentication.getPrincipal());
+        Integer userId = hospitalizedPet.getPet().getCustomer().getUser().getId();
+        if (!Objects.equals(userId, user.getId())&&!user.getRole().equals(Role.STAFF)) {
+            throw new OperationNotPermittedException("You are not allow to view service");
+        }
+        if (page < 0) {
+            page = 0;
+        }
+        Pageable pageable = PageRequest.of(page, MAX);
+        Page<HospitalizedPetServices> services=hospitalizedPetServiceRepository.findAllByHospitalizedPetId(id,pageable);
+        return services.map(mapper::mapForService);
     }
 
     @Override
