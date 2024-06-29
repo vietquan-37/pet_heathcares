@@ -31,6 +31,7 @@ public class ReviewService implements IReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
+
     private final AppointmentRepository appointmentRepository;
     private static final int MAX = 5;
     private final CustomerRepository customerRepository;
@@ -39,14 +40,19 @@ public class ReviewService implements IReviewService {
     public void addReview(Integer appointmentId, ReviewDTO dto, Authentication authentication) throws UserMistake, OperationNotPermittedException {
         var appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new EntityNotFoundException("appointment not found"));
         User user = ((User) authentication.getPrincipal());
+        var customer = customerRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("customer not found"));
         if (!appointment.getAppointmentStatus().equals(AppointmentStatus.BOOKED) || appointment.getAppointmentDate().isAfter(LocalDate.now())) {
             throw new UserMistake("you can not review this appointment");
         }
         if (!Objects.equals(appointment.getCustomer().getUser().getId(), user.getId())) {
             throw new OperationNotPermittedException("You are not allowed to update this appointment");
         }
+
         Review review = reviewMapper.mapReviewDTO(dto);
+        review.setCustomer(customer);
         reviewRepository.save(review);
+        appointment.setReview(review);
+        appointmentRepository.save(appointment);
     }
 
     @Override
