@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+
 
 @Getter
 @Setter
@@ -19,6 +19,5 @@ public class HospitalizedPetDTO {
     private Integer doctorId;
     @NotNull
     private Integer cageId;
-    @Size(min = 1)
-    private List<Integer> serviceIds;
+
 }
