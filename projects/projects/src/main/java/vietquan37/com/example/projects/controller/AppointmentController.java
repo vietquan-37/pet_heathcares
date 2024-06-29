@@ -30,6 +30,15 @@ public ResponseEntity<APIResponse> GetAllUserAppointment( Authentication authent
             .data(response)
             .build());
 }
+    @GetMapping("/doctor")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
+    public ResponseEntity<APIResponse> GetAllDoctorAppointment( Authentication authentication,@RequestParam(defaultValue = "0")int page) {
+        var response = appointmentService.GetDoctorAppointment(authentication,page);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(response)
+                .build());
+    }
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('STAFF')")
     public ResponseEntity<APIResponse> GetAllAppointment(@RequestParam(defaultValue = "0")int page) {

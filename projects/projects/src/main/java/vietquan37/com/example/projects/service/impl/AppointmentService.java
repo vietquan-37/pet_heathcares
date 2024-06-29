@@ -101,6 +101,18 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
+    public Page<AppointmentDataResponse> GetDoctorAppointment(Authentication connectedUser, int page) {
+        User user = ((User) connectedUser.getPrincipal());
+        var doctor = doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+        if (page < 0) {
+            page = 0;
+        }
+        Pageable pageable = PageRequest.of(page, MAX);
+        Page<Appointment> appointments = appointmentRepository.findAllByDoctorIdAndDeletedIsFalse(doctor.getId(), pageable);
+        return appointments.map(mapper::mapAppointmentResponseForUser);
+    }
+
+    @Override
     public AppointmentDataResponse GetAppointmentById(Integer appointmentId, Authentication connectedUser) throws OperationNotPermittedException {
         var appointment = appointmentRepository.findByIdAndDeletedIsFalse(appointmentId).orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
         User user = ((User) connectedUser.getPrincipal());

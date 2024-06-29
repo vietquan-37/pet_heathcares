@@ -22,7 +22,7 @@ public interface IAppointmentService {
     Page<AppointmentDataResponse> GetAllUserAppointment(Authentication connectedUser, int page);
     Page<AppointmentDataResponse> GetAllAppointment( int page);
     void UpdateAppointment(Integer appointmentId, AppointmentDTO dto, Authentication connectedUser) throws OperationNotPermittedException, DoctorNotAvailableException, UserMistake;
-
+Page<AppointmentDataResponse> GetDoctorAppointment(Authentication connectedUser, int page);
     PaymentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
             throws OperationNotPermittedException, PayPalRESTException, UserMistake;
 }
