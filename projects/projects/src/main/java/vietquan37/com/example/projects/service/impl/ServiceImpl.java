@@ -72,4 +72,11 @@ public class ServiceImpl implements IService {
         List<Services>services=serviceRepository.findAllByDeletedIsFalseAndType(types);
         return services.stream().map(mapper::mapToAllServiceDtoForUser).collect(Collectors.toList());
     }
+
+    @Override
+    public List<ServiceResponse> getAllServiceForHospitalized() {
+        List<Services>services=serviceRepository.findAllHospitalizedService(ServiceTypes.HOSPITALIZATION);
+        return services.stream().map(mapper::mapToAllServiceDtoForUser).collect(Collectors.toList());
+    }
 }
+

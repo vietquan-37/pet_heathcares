@@ -79,5 +79,12 @@ public class ServiceController {
 
 
     }
+    @GetMapping("/hospitalized")
+    public ResponseEntity<APIResponse> GetServiceForHospitalized() {
+        var response = iService.getAllServiceForHospitalized();
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
+
+
+    }
 
 }

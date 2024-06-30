@@ -24,12 +24,11 @@ import vietquan37.com.example.projects.payload.request.UpdatePetServiceDTO;
 import vietquan37.com.example.projects.payload.response.HospitalizedPetResponse;
 import vietquan37.com.example.projects.payload.response.HospitalizedServiceResponse;
 import vietquan37.com.example.projects.payload.response.PaymentResponse;
-import vietquan37.com.example.projects.payload.response.ServiceHospitalizedResponse;
 import vietquan37.com.example.projects.repository.*;
 import vietquan37.com.example.projects.service.IHospitalizedPetService;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,17 +46,16 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     private final CageRepository cageRepository;
     private final PayPalService payPalService;
     private final PaymentRepository paymentRepository;
-    private  static final int MAX = 5;
-    private final CustomerRepository customerRepository;
+    private static final int MAX = 5;
+
+
     @Override
     public void addHospitalizedPet(HospitalizedPetDTO dto) throws UserMistake {
-        var pet = petRepository.findByIdAndDeletedIsFalse(dto.getPetId()).orElseThrow(() ->
-                new EntityNotFoundException("pet not found"));
-        if(repository.findByPetIdAndDeletedIsFalseAndDischargeDate(pet.getId(),null).isPresent()){
+        var pet = petRepository.findByIdAndDeletedIsFalse(dto.getPetId()).orElseThrow(() -> new EntityNotFoundException("pet not found"));
+        if (repository.findByPetIdAndDeletedIsFalseAndDischargeDate(pet.getId(), null).isPresent()) {
             throw new UserMistake("pet is already under treatment");
         }
-        var doctor = doctorRepository.findById(dto.getDoctorId()).orElseThrow(() ->
-                new EntityNotFoundException("doctor not found"));
+        var doctor = doctorRepository.findById(dto.getDoctorId()).orElseThrow(() -> new EntityNotFoundException("doctor not found"));
         var cage = cageRepository.findByIdAndDeletedIsFalseAndCageStatus(dto.getCageId(), CageStatus.Available).orElseThrow(() -> new EntityNotFoundException("cage not found or it has been occupied"));
         HospitalizedPet hospitalizedPet = mapper.mapDto(dto);
         hospitalizedPet.setPet(pet);
@@ -80,8 +78,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             throw new OperationNotPermittedException("Cannot update service for pet have discharged");
         }
         for (Integer serviceId : dto.getServiceIds()) {
-            Services service = serviceRepository.findByIdAndDeletedIsFalseAndType(serviceId, ServiceTypes.HOSPITALIZATION).orElseThrow(() ->
-                    new EntityNotFoundException("service not found"));
+            Services service = serviceRepository.findByIdAndDeletedIsFalseAndType(serviceId, ServiceTypes.HOSPITALIZATION).orElseThrow(() -> new EntityNotFoundException("service not found"));
             HospitalizedPetServices hospitalizedPetService = new HospitalizedPetServices();
             hospitalizedPetService.setHospitalizedPet(hospitalizedPet);
             hospitalizedPetService.setService(service);
@@ -97,7 +94,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     public void deleteServiceForPet(Integer id) throws OperationNotPermittedException {
         var service = hospitalizedPetServiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("service not found"));
         var hospitalizedPet = service.getHospitalizedPet();
-        if(hospitalizedPet.getDischargeDate()!=null){
+        if (hospitalizedPet.getDischargeDate() != null) {
             throw new OperationNotPermittedException("Cannot delete service for pet have discharged");
         }
         hospitalizedPet.setTotalPrice(hospitalizedPet.getTotalPrice().subtract(service.getService().getPrice()));
@@ -107,15 +104,14 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     @Override
     public Page<HospitalizedPetResponse> getAllForDoctor(int page, Authentication authentication) {
         User user = ((User) authentication.getPrincipal());
-       var doctor= doctorRepository.findByUser_Id(user.getId()).orElseThrow(()->new EntityNotFoundException("doctor not found"));
+        var doctor = doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("doctor not found"));
         if (page < 0) {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<HospitalizedPet>pet=repository.findAllByDeletedIsFalseAndDoctorId(pageable,doctor.getId());
+        Page<HospitalizedPet> pet = repository.findAllByDeletedIsFalseAndDoctorId(pageable, doctor.getId());
         return pet.map(mapper::mapForDoctor);
     }
-
 
 
     @Override
@@ -130,7 +126,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<HospitalizedPet>pet=repository.findAllByDeletedIsFalse(pageable);
+        Page<HospitalizedPet> pet = repository.findAllByDeletedIsFalse(pageable);
         return pet.map(mapper::mapForResponse);
     }
 
@@ -141,7 +137,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         if (hospitalizedPet.getDischargeDate() != null) {
             throw new OperationNotPermittedException("Cannot delete information when it have been discharged");
         }
-        var cage= hospitalizedPet.getCage();
+        var cage = hospitalizedPet.getCage();
         int currentOccupancy = repository.countHospitalizedPetByCageIdAndDischargeDateAndDeletedIsFalse(cage.getId(), null);
         if (currentOccupancy >= cage.getCapacity()) {
             cage.setCageStatus(CageStatus.Available);
@@ -152,27 +148,26 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     }
 
 
-
     @Override
     public List<HospitalizedPetResponse> getAllForCustomer(Authentication authentication) {
         User user = ((User) authentication.getPrincipal());
-        List<HospitalizedPet> all=repository.findAllByPetCustomerUserIdAndDeletedIsFalse(user.getId());
+        List<HospitalizedPet> all = repository.findAllByPetCustomerUserIdAndDeletedIsFalse(user.getId());
         return all.stream().map(mapper::mapForResponse).collect(Collectors.toList());
     }
 
     @Override
-    public Page<HospitalizedServiceResponse> getAllServiceById(Integer id,Authentication authentication, int page) throws OperationNotPermittedException {
+    public Page<HospitalizedServiceResponse> getAllServiceById(Integer id, Authentication authentication, int page) throws OperationNotPermittedException {
         var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
         User user = ((User) authentication.getPrincipal());
         Integer userId = hospitalizedPet.getPet().getCustomer().getUser().getId();
-        if (!Objects.equals(userId, user.getId())&&!user.getRole().equals(Role.STAFF)) {
+        if (!Objects.equals(userId, user.getId()) && !user.getRole().equals(Role.STAFF)) {
             throw new OperationNotPermittedException("You are not allow to view service");
         }
         if (page < 0) {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<HospitalizedPetServices> services=hospitalizedPetServiceRepository.findAllByHospitalizedPetId(id,pageable);
+        Page<HospitalizedPetServices> services = hospitalizedPetServiceRepository.findAllByHospitalizedPetId(id, pageable);
         return services.map(mapper::mapForService);
     }
 
@@ -184,13 +179,13 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         if (!Objects.equals(userId, user.getId())) {
             throw new OperationNotPermittedException("You are not allow to pay that pet care");
         }
-        if(hospitalizedPet.isPaid()){
+        if (hospitalizedPet.isPaid()) {
             throw new UserMistake("Cannot pay for the paid pet care");
         }
         if (hospitalizedPet.getDischargeDate() == null) {
             throw new UserMistake("Cannot pay for pets without discharge date");
         }
-       return handlePayment(hospitalizedPet);
+        return handlePayment(hospitalizedPet);
     }
 
     @Override
@@ -205,34 +200,51 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             }
         }
 
-        return hospitalizedPets.stream()
-                .map(mapper::mapForResponse)
-                .collect(Collectors.toList());
+        return hospitalizedPets.stream().map(mapper::mapForResponse).collect(Collectors.toList());
     }
 
 
     @Override
-    public void dischargeHospitalizedPet(Integer id, Authentication authentication) throws OperationNotPermittedException {
+    public void dischargeHospitalizedPet(Integer id, Authentication authentication) throws OperationNotPermittedException, UserMistake {
         var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
         User user = ((User) authentication.getPrincipal());
         Integer userId = hospitalizedPet.getDoctor().getUser().getId();
         if (!Objects.equals(userId, user.getId())) {
-            throw new OperationNotPermittedException("You are not allow to discharge that pet care");
+            throw new OperationNotPermittedException("You are not allowed to discharge that pet care");
         }
         if (hospitalizedPet.getDischargeDate() != null) {
-            throw new OperationNotPermittedException("Cannot update information when it have been discharged");
+            throw new OperationNotPermittedException("Cannot update information when it has been discharged");
         }
-        var cage= hospitalizedPet.getCage();
+
+        var cage = hospitalizedPet.getCage();
+        LocalDate admissionDate = hospitalizedPet.getAdmissionDate();
+        LocalDate dischargeDate = LocalDate.now();
+        long days = ChronoUnit.DAYS.between(admissionDate, dischargeDate);
+
+        var service = serviceRepository.findByName("Overnight Stay").orElseThrow(() -> new EntityNotFoundException("Service not found"));
+
+        for (int i = 0; i < days; i++) {
+            LocalDate usageDate = admissionDate.plusDays(i);
+            HospitalizedPetServices hospitalizedService = new HospitalizedPetServices();
+            hospitalizedService.setHospitalizedPet(hospitalizedPet);
+            hospitalizedService.setService(service);
+            hospitalizedService.setUsageDate(usageDate);  // Set the usage date
+            hospitalizedPetServiceRepository.save(hospitalizedService);
+            hospitalizedPet.setTotalPrice(hospitalizedPet.getTotalPrice().add(service.getPrice()));
+        }
+
         int currentOccupancy = repository.countHospitalizedPetByCageIdAndDischargeDateAndDeletedIsFalse(cage.getId(), null);
         if (currentOccupancy >= cage.getCapacity()) {
             cage.setCageStatus(CageStatus.Available);
             cageRepository.save(cage);
         }
 
-        hospitalizedPet.setDischargeDate(LocalDate.now());
+        hospitalizedPet.setDischargeDate(dischargeDate);
+        if (hospitalizedPet.getDischargeDate().equals(hospitalizedPet.getAdmissionDate())) {
+            throw new UserMistake("Cannot discharge this pet");
+        }
+
         repository.save(hospitalizedPet);
-
-
     }
 
 
@@ -252,12 +264,10 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         repository.save(hospitalizedPet);
 
     }
+
     private PaymentResponse handlePayment(HospitalizedPet hospitalizedPet) throws PayPalRESTException {
         try {
-            Payment payment = payPalService.createPayment(
-                    hospitalizedPet.getTotalPrice().toString(),
-                    "HospitalizedPet payment"
-            );
+            Payment payment = payPalService.createPayment(hospitalizedPet.getTotalPrice().toString(), "HospitalizedPet payment");
 
             if (hospitalizedPet.getPayments() != null) {
                 paymentRepository.delete(hospitalizedPet.getPayments());

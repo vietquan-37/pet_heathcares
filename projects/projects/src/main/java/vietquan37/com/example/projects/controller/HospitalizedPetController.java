@@ -128,7 +128,7 @@ public class HospitalizedPetController {
 
     @PutMapping("/discharge/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public ResponseEntity<APIResponse> dischargeHospitalizedPet(@PathVariable Integer id, Authentication authentication) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> dischargeHospitalizedPet(@PathVariable Integer id, Authentication authentication) throws OperationNotPermittedException, UserMistake {
         hospitalizedPetService.dischargeHospitalizedPet(id, authentication);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

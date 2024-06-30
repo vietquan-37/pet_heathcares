@@ -16,4 +16,5 @@ public interface IService {
     void deleteService(Integer id);
     ServiceResponse getServiceById(Integer id);
     List<ServiceResponse> getAllServiceByType(ServiceTypes types);
+    List<ServiceResponse> getAllServiceForHospitalized();
 }
