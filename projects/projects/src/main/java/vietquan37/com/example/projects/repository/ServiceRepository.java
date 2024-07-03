@@ -14,9 +14,9 @@ public interface ServiceRepository extends JpaRepository<Services, Integer> {
     Optional<Services> findByName(String name);
     List<Services> findAllByDeletedIsFalse();
     Optional<Services> findByIdAndDeletedIsFalseAndType(Integer id, ServiceTypes types);
-    List<Services> findAllByDeletedIsFalseAndType(ServiceTypes types);
     @Query("SELECT s FROM Services s WHERE s.deleted = false AND s.type = :type AND s.name <> 'Overnight Stay'")
-    List<Services> findAllHospitalizedService(@Param("type") ServiceTypes type);
+    List<Services> findAllByDeletedIsFalseAndType(@Param("type") ServiceTypes types);
+
 
 
 }

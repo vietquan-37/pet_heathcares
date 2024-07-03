@@ -73,10 +73,6 @@ public class ServiceImpl implements IService {
         return services.stream().map(mapper::mapToAllServiceDtoForUser).collect(Collectors.toList());
     }
 
-    @Override
-    public List<ServiceResponse> getAllServiceForHospitalized() {
-        List<Services>services=serviceRepository.findAllHospitalizedService(ServiceTypes.HOSPITALIZATION);
-        return services.stream().map(mapper::mapToAllServiceDtoForUser).collect(Collectors.toList());
-    }
+
 }
 

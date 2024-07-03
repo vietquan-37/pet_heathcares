@@ -86,7 +86,7 @@ public class AppointmentService implements IAppointmentService {
         if (isDoctorAvailable(doctor, dto.getAppointmentDate())) {
             throw new DoctorNotAvailableException("Doctor is not available at the specified time");
         }
-        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(doctor.getId(),dto.getTimeFrame(),dto.getAppointmentDate())>=3&&(!dto.getAppointmentDate().equals(appointment.getAppointmentDate())||!dto.getTimeFrame().equals(appointment.getTimeFrame()))){
+        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(doctor.getId(),dto.getTimeFrame(),dto.getAppointmentDate(),AppointmentStatus.BOOKED)>=3){
             throw new DoctorNotAvailableException("Doctor is not available at the specified time");
         }
 
@@ -150,7 +150,7 @@ public class AppointmentService implements IAppointmentService {
         if (isDoctorAvailable(doctor, dto.getAppointmentDate())) {
             throw new DoctorNotAvailableException("Doctor is not available at the specified time");
         }
-        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(doctor.getId(),dto.getTimeFrame(),dto.getAppointmentDate())>=3){
+        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(doctor.getId(),dto.getTimeFrame(),dto.getAppointmentDate(),AppointmentStatus.BOOKED)>=3){
             throw new DoctorNotAvailableException("Doctor is not available at the specified time");
         }
 

@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vietquan37.com.example.projects.config.CloudinaryService;
 import vietquan37.com.example.projects.entity.Doctor;
 import vietquan37.com.example.projects.entity.User;
+import vietquan37.com.example.projects.enumClass.AppointmentStatus;
 import vietquan37.com.example.projects.enumClass.TimeFrame;
 import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.exception.FileException;
@@ -87,7 +88,7 @@ public class DoctorService implements IDoctorService {
         }
         WorkingDay appointmentDay = WorkingDay.valueOf(appointmentDate.getDayOfWeek().name());
         var doctor = doctorRepository.findAllBySpecificWorkingDayAndUser_AccountLockedFalse(appointmentDay.name());
-        doctor.removeIf(doc -> appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDate(doc.getId(), timeFrame,appointmentDate) >= 3);
+        doctor.removeIf(doc -> appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(doc.getId(), timeFrame,appointmentDate,AppointmentStatus.BOOKED) >= 3);
         if (doctor.isEmpty()) {
             throw new EntityNotFoundException("There is no doctor associated with the given date");
         }
