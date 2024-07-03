@@ -14,5 +14,6 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Integer>, PagingAndSortingRepository<Review,Integer> {
     Page<Review> findAll(Pageable pageable);
     List<Review> findAllByCustomerId(Integer customerId);
+    Review findByAppointmentId(Integer appointmentId);
 
 }

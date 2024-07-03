@@ -89,7 +89,8 @@ public class ReviewService implements IReviewService {
 
     @Override
     public ReviewResponse getReviewById(Integer id) {
-        var review = reviewRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("review not found"));
+        var appointment = appointmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("appointment not found"));
+        var review = reviewRepository.findByAppointmentId(appointment.getId());
         return reviewMapper.mapReviewResponse(review);
     }
 

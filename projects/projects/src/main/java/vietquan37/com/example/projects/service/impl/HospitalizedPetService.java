@@ -213,7 +213,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             throw new OperationNotPermittedException("You are not allowed to discharge that pet care");
         }
         if (hospitalizedPet.getDischargeDate() != null) {
-            throw new OperationNotPermittedException("Cannot update information when it has been discharged");
+            throw new UserMistake("Cannot update information when it has been discharged");
         }
 
         var cage = hospitalizedPet.getCage();

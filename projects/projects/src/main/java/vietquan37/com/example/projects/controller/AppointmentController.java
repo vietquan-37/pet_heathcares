@@ -21,88 +21,67 @@ import vietquan37.com.example.projects.service.IAppointmentService;
 @RequiredArgsConstructor
 public class AppointmentController {
     private final IAppointmentService appointmentService;
-@GetMapping
-@PreAuthorize("hasAnyRole('USER')")
-public ResponseEntity<APIResponse> GetAllUserAppointment( Authentication authentication,@RequestParam(defaultValue = "0")int page) {
-    var response = appointmentService.GetAllUserAppointment(authentication,page);
-    return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-            .status(HttpStatus.OK.value())
-            .data(response)
-            .build());
-}
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<APIResponse> GetAllUserAppointment(Authentication authentication, @RequestParam(defaultValue = "0") int page) {
+        var response = appointmentService.GetAllUserAppointment(authentication, page);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
+    }
+
     @GetMapping("/doctor")
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public ResponseEntity<APIResponse> GetAllDoctorAppointment( Authentication authentication,@RequestParam(defaultValue = "0")int page) {
-        var response = appointmentService.GetDoctorAppointment(authentication,page);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(response)
-                .build());
+    public ResponseEntity<APIResponse> GetAllDoctorAppointment(Authentication authentication, @RequestParam(defaultValue = "0") int page) {
+        var response = appointmentService.GetDoctorAppointment(authentication, page);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
     }
+
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('STAFF')")
-    public ResponseEntity<APIResponse> GetAllAppointment(@RequestParam(defaultValue = "0")int page) {
+    public ResponseEntity<APIResponse> GetAllAppointment(@RequestParam(defaultValue = "0") int page) {
         var response = appointmentService.GetAllAppointment(page);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(response)
-                .build());
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
     }
+
     @GetMapping("/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> GetUserAppointmentById(Authentication authentication,@PathVariable Integer appointmentId) throws OperationNotPermittedException {
-        var response = appointmentService.GetAppointmentById(appointmentId,authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(response)
-                .build());
+    public ResponseEntity<APIResponse> GetUserAppointmentById(Authentication authentication, @PathVariable Integer appointmentId) throws OperationNotPermittedException {
+        var response = appointmentService.GetAppointmentById(appointmentId, authentication);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(response).build());
     }
+
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> CreateAppointment(@RequestBody @Valid AppointmentDTO dto, Authentication authentication) throws DoctorNotAvailableException, OperationNotPermittedException, UserMistake, PayPalRESTException {
         var response = appointmentService.CreateAppointment(dto, authentication);
-        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.builder()
-                .status(HttpStatus.CREATED.value())
-                .data(response)
-                .build());
+        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.builder().status(HttpStatus.CREATED.value()).data(response).build());
     }
 
     @PutMapping("/cancel/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> CancelAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws  OperationNotPermittedException, UserMistake {
+    public ResponseEntity<APIResponse> CancelAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws OperationNotPermittedException, UserMistake {
         appointmentService.CancelAppointment(appointmentId, authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data("Appointment Cancelled")
-                .build());
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data("Appointment Cancelled").build());
     }
 
     @PutMapping("/update/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> UpdateAppointment(@PathVariable Integer appointmentId, @RequestBody AppointmentDTO dto, Authentication authentication) throws DoctorNotAvailableException, OperationNotPermittedException, UserMistake {
         appointmentService.UpdateAppointment(appointmentId, dto, authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data("Appointment updated successfully")
-                .build());
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data("Appointment updated successfully").build());
     }
 
     @PatchMapping("/delete/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> DeleteAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws DoctorNotAvailableException, OperationNotPermittedException, UserMistake, PayPalRESTException {
         appointmentService.DeleteAppointment(appointmentId, authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data("Appointment deleted successfully")
-                .build());
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data("Appointment deleted successfully").build());
     }
+
     @PutMapping("repay/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<APIResponse> RepayAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws OperationNotPermittedException, PayPalRESTException, UserMistake {
-       var url= appointmentService.RePayAppointment(appointmentId,authentication);
-        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
-                .status(HttpStatus.OK.value())
-                .data(url)
-                .build());
+        var url = appointmentService.RePayAppointment(appointmentId, authentication);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(url).build());
     }
 }
