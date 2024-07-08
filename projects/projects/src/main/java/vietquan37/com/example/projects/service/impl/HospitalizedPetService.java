@@ -71,11 +71,11 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     }
 
     @Override
-    public void updateServiceForPet(Integer id, UpdatePetServiceDTO dto) throws OperationNotPermittedException {
+    public void updateServiceForPet(Integer id, UpdatePetServiceDTO dto) throws  UserMistake {
         var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
         List<HospitalizedPetServices> hospitalizedPetServices = new ArrayList<>();
         if (hospitalizedPet.getDischargeDate() != null) {
-            throw new OperationNotPermittedException("Cannot update service for pet have discharged");
+            throw new UserMistake("Cannot update service for pet have discharged");
         }
         for (Integer serviceId : dto.getServiceIds()) {
             Services service = serviceRepository.findByIdAndDeletedIsFalseAndType(serviceId, ServiceTypes.HOSPITALIZATION).orElseThrow(() -> new EntityNotFoundException("service not found"));
@@ -91,11 +91,11 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     }
 
     @Override
-    public void deleteServiceForPet(Integer id) throws OperationNotPermittedException {
+    public void deleteServiceForPet(Integer id) throws UserMistake {
         var service = hospitalizedPetServiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("service not found"));
         var hospitalizedPet = service.getHospitalizedPet();
         if (hospitalizedPet.getDischargeDate() != null) {
-            throw new OperationNotPermittedException("Cannot delete service for pet have discharged");
+            throw new UserMistake("Cannot delete service for pet have discharged");
         }
         hospitalizedPet.setTotalPrice(hospitalizedPet.getTotalPrice().subtract(service.getService().getPrice()));
         hospitalizedPetServiceRepository.delete(service);
@@ -249,7 +249,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
 
 
     @Override
-    public void updateHospitalizedPetForDoctor(Integer id, UpdatePetRecordDTO dto, Authentication authentication) throws OperationNotPermittedException {
+    public void updateHospitalizedPetForDoctor(Integer id, UpdatePetRecordDTO dto, Authentication authentication) throws OperationNotPermittedException, UserMistake {
         var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
         User user = ((User) authentication.getPrincipal());
         Integer userId = hospitalizedPet.getDoctor().getUser().getId();
@@ -257,7 +257,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             throw new OperationNotPermittedException("You are not allow to update that pet care");
         }
         if (hospitalizedPet.getDischargeDate() != null) {
-            throw new OperationNotPermittedException("Cannot update information when it have been discharged");
+            throw new UserMistake("Cannot update information when it have been discharged");
         }
 
         mapper.mapUpdatePetRecord(dto, hospitalizedPet);
@@ -270,15 +270,18 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             Payment payment = payPalService.createPayment(hospitalizedPet.getTotalPrice().toString(), "HospitalizedPet payment");
 
             if (hospitalizedPet.getPayments() != null) {
-                paymentRepository.delete(hospitalizedPet.getPayments());
+                Payments oldPayments = hospitalizedPet.getPayments();
                 hospitalizedPet.setPayments(null);
                 repository.save(hospitalizedPet);
+
+                paymentRepository.delete(oldPayments);
             }
 
-            Payments payments = new Payments();
-            payments.setPaymentId(payment.getId());
-            paymentRepository.save(payments);
-            hospitalizedPet.setPayments(payments);
+            Payments newPayments = new Payments();
+            newPayments.setPaymentId(payment.getId());
+            paymentRepository.save(newPayments);
+
+            hospitalizedPet.setPayments(newPayments);
             repository.save(hospitalizedPet);
 
             for (Links link : payment.getLinks()) {
@@ -292,4 +295,5 @@ public class HospitalizedPetService implements IHospitalizedPetService {
 
         throw new PayPalRESTException("Payment creation failed");
     }
+
 }

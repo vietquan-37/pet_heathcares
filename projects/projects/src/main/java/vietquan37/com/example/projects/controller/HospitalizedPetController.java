@@ -39,7 +39,7 @@ public class HospitalizedPetController {
 
     @PostMapping("/updateService/{id}")
     @PreAuthorize("hasAnyRole('STAFF')")
-    public ResponseEntity<APIResponse> updateServiceForPet(@PathVariable Integer id, @RequestBody @Valid UpdatePetServiceDTO dto) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> updateServiceForPet(@PathVariable Integer id, @RequestBody @Valid UpdatePetServiceDTO dto) throws  UserMistake {
         hospitalizedPetService.updateServiceForPet(id, dto);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -48,7 +48,7 @@ public class HospitalizedPetController {
 
     @DeleteMapping("/deleteService/{id}")
     @PreAuthorize("hasAnyRole('STAFF')")
-    public ResponseEntity<APIResponse> deleteServiceForPet(@PathVariable Integer id) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> deleteServiceForPet(@PathVariable Integer id) throws UserMistake {
         hospitalizedPetService.deleteServiceForPet(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())
@@ -137,7 +137,7 @@ public class HospitalizedPetController {
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('DOCTOR')")
-    public ResponseEntity<APIResponse> updateHospitalizedPetForDoctor(@PathVariable Integer id, @RequestBody @Valid UpdatePetRecordDTO dto, Authentication authentication) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> updateHospitalizedPetForDoctor(@PathVariable Integer id, @RequestBody @Valid UpdatePetRecordDTO dto, Authentication authentication) throws OperationNotPermittedException, UserMistake {
         hospitalizedPetService.updateHospitalizedPetForDoctor(id, dto, authentication);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

@@ -230,9 +230,10 @@ public class AppointmentService implements IAppointmentService {
             );
 
             if (appointment.getPayments() != null) {
-                paymentRepository.delete(appointment.getPayments());
+
                 appointment.setPayments(null);
                 appointmentRepository.save(appointment);
+                paymentRepository.delete(appointment.getPayments());
             }
 
             Payments payments = new Payments();

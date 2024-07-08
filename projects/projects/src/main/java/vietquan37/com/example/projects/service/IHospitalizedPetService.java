@@ -17,9 +17,9 @@ import java.util.List;
 
 public interface IHospitalizedPetService {
     void addHospitalizedPet(HospitalizedPetDTO hospitalizedPet) throws UserMistake;
-    void updateHospitalizedPetForDoctor(Integer id,UpdatePetRecordDTO dto, Authentication authentication) throws OperationNotPermittedException;
-    void updateServiceForPet(Integer id, UpdatePetServiceDTO dto) throws OperationNotPermittedException;
-    void deleteServiceForPet(Integer id) throws OperationNotPermittedException;
+    void updateHospitalizedPetForDoctor(Integer id,UpdatePetRecordDTO dto, Authentication authentication) throws OperationNotPermittedException, UserMistake;
+    void updateServiceForPet(Integer id, UpdatePetServiceDTO dto) throws  UserMistake;
+    void deleteServiceForPet(Integer id) throws  UserMistake;
     Page<HospitalizedPetResponse> getAllForDoctor(int page,Authentication authentication);
     HospitalizedPetResponse getById(Integer id);
     Page<HospitalizedPetResponse> getAllForStaff(int page);
