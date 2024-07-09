@@ -12,7 +12,7 @@ import java.util.List;
 public interface IReviewService {
     void addReview(Integer appointmentId, ReviewDTO review, Authentication authentication) throws UserMistake, OperationNotPermittedException;
 
-    Page<ReviewResponse> getAllReviews(int page);
+    List<ReviewResponse> getAllReviews();
 
     void updateReview(Integer id, ReviewDTO dto, Authentication authentication) throws OperationNotPermittedException;
 

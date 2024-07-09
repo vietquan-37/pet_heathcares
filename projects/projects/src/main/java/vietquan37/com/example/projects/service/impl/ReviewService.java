@@ -33,7 +33,6 @@ public class ReviewService implements IReviewService {
     private final ReviewMapper reviewMapper;
 
     private final AppointmentRepository appointmentRepository;
-    private static final int MAX = 5;
     private final CustomerRepository customerRepository;
 
     @Override
@@ -56,13 +55,10 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Page<ReviewResponse> getAllReviews(int page) {
-        if (page < 0) {
-            page = 0;
-        }
-        Pageable pageable = PageRequest.of(page, MAX);
-        Page<Review> reviews = reviewRepository.findAll(pageable);
-        return reviews.map(reviewMapper::mapReviewResponse);
+    public List<ReviewResponse> getAllReviews() {
+
+        List<Review> reviews = reviewRepository.findAll();
+        return reviews.stream().map(reviewMapper::mapReviewResponse).collect(Collectors.toList());
     }
 
     @Override

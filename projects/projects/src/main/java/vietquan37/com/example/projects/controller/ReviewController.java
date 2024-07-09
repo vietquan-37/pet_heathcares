@@ -22,8 +22,8 @@ public class ReviewController {
     private final IReviewService reviewService;
 
     @GetMapping
-    public ResponseEntity<APIResponse> getReview(@RequestParam(defaultValue = "0") int page) {
-        var response = reviewService.getAllReviews(page);
+    public ResponseEntity<APIResponse> getReview() {
+        var response = reviewService.getAllReviews();
         return ResponseEntity
                 .ok(APIResponse.builder().data(response).status(HttpStatus.OK.value()).build());
     }
