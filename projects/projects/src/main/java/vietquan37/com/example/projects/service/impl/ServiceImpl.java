@@ -73,6 +73,13 @@ public class ServiceImpl implements IService {
         return services.stream().map(mapper::mapToAllServiceDtoForUser).collect(Collectors.toList());
     }
 
+    @Override
+    public void unDeleteService(Integer id) {
+        Services service = serviceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("service not found"));
+        service.setDeleted(false);
+        serviceRepository.save(service);
+    }
+
 
 }
 

@@ -71,4 +71,15 @@ private final ICageService cageService;
 
 
     }
+    @PatchMapping("/undelete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<APIResponse> UnDeleteCage(@PathVariable Integer id)  {
+        cageService.unDeleteCage(id);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data("Cage undeleted successfully.")
+                .build());
+
+
+    }
 }

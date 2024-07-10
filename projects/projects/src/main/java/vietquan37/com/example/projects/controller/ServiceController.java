@@ -27,6 +27,17 @@ public class ServiceController {
 
 
     }
+    @PatchMapping("/undelete/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<APIResponse> UnDeleteService(@PathVariable Integer id) {
+        iService.unDeleteService(id);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data("Service undeleted successfully.")
+                .build());
+
+
+    }
     @GetMapping
     public ResponseEntity<APIResponse> GetAllServiceForUser() {
         var response = iService.getAllServicesForAdmin();

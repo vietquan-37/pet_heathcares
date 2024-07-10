@@ -13,6 +13,6 @@ public interface ICageService {
     CageResponse getCageById(Integer id) ;
     List<CageResponse> getAllCage();
     List<CageResponse> getAllCageForStaff();
-
+void unDeleteCage(Integer id);
 
 }

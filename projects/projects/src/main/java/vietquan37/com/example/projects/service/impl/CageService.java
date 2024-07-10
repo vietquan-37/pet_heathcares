@@ -65,6 +65,12 @@ public class CageService implements ICageService {
         return cages.stream().map(cageMapper::mapResponse).collect(Collectors.toList());
     }
 
+    @Override
+    public void unDeleteCage(Integer id) {
+        Cage cage = cageRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("cage not found"));
+        cage.setDeleted(false);
+        cageRepository.save(cage);
+    }
 
 
     @Override
