@@ -73,14 +73,14 @@ public class AppointmentController {
 
     @PatchMapping("/delete/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> DeleteAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws DoctorNotAvailableException, OperationNotPermittedException, UserMistake, PayPalRESTException {
+    public ResponseEntity<APIResponse> DeleteAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws  OperationNotPermittedException, UserMistake, PayPalRESTException {
         appointmentService.DeleteAppointment(appointmentId, authentication);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data("Appointment deleted successfully").build());
     }
 
     @PutMapping("repay/{appointmentId}")
     @PreAuthorize("hasAnyRole('USER')")
-    public ResponseEntity<APIResponse> RepayAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws OperationNotPermittedException, PayPalRESTException, UserMistake {
+    public ResponseEntity<APIResponse> RepayAppointment(@PathVariable Integer appointmentId, Authentication authentication) throws OperationNotPermittedException, PayPalRESTException, UserMistake, DoctorNotAvailableException {
         var url = appointmentService.RePayAppointment(appointmentId, authentication);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder().status(HttpStatus.OK.value()).data(url).build());
     }

@@ -183,7 +183,7 @@ public class AppointmentService implements IAppointmentService {
     @Transactional
     @Override
     public PaymentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
-            throws OperationNotPermittedException, PayPalRESTException, UserMistake {
+            throws OperationNotPermittedException, PayPalRESTException, UserMistake, DoctorNotAvailableException {
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
@@ -200,6 +200,9 @@ public class AppointmentService implements IAppointmentService {
         if (appointment.getAppointmentStatus().equals(AppointmentStatus.BOOKED)) {
             throw new UserMistake("Appointment is already paid");
         }
+        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(appointment.getDoctor().getId(),appointment.getTimeFrame(),appointment.getAppointmentDate(),AppointmentStatus.BOOKED)>=3){
+            throw new DoctorNotAvailableException("Please update the appointment date and timeframe");
+        }
 
         Customer customer = customerRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
@@ -211,13 +214,11 @@ public class AppointmentService implements IAppointmentService {
         appointment.setAppointmentPrice(adjustedPrice);
         appointmentRepository.save(appointment);
 
-
         if (appointment.getAppointmentPrice().equals(BigDecimal.ZERO)) {
             customer.setCustomer_balance(customer.getCustomer_balance().subtract(appointment.getService().getPrice()));
             customerRepository.save(customer);
             return PaymentResponse.builder().msg("Appointment booked successfully").build();
         } else {
-
             return handlePayment(appointment);
         }
     }
@@ -229,11 +230,15 @@ public class AppointmentService implements IAppointmentService {
                     "Appointment payment"
             );
 
-            if (appointment.getPayments() != null) {
+            if (payment == null || payment.getId() == null) {
+                throw new PayPalRESTException("Payment creation failed");
+            }
 
+            if (appointment.getPayments() != null) {
+                Payments previousPayments = appointment.getPayments();
                 appointment.setPayments(null);
                 appointmentRepository.save(appointment);
-                paymentRepository.delete(appointment.getPayments());
+                paymentRepository.delete(previousPayments);
             }
 
             Payments payments = new Payments();
