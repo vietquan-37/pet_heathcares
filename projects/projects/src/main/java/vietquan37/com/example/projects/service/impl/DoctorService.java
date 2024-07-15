@@ -89,9 +89,7 @@ public class DoctorService implements IDoctorService {
         WorkingDay appointmentDay = WorkingDay.valueOf(appointmentDate.getDayOfWeek().name());
         var doctor = doctorRepository.findAllBySpecificWorkingDayAndUser_AccountLockedFalse(appointmentDay.name());
         doctor.removeIf(doc -> appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(doc.getId(), timeFrame,appointmentDate,AppointmentStatus.BOOKED) >= 3);
-        if (doctor.isEmpty()) {
-            throw new EntityNotFoundException("There is no doctor associated with the given date");
-        }
+
         return doctor.stream().map(doctorMapper::mapDoctorResponseForInfo).collect(Collectors.toList());
     }
 }

@@ -185,6 +185,7 @@ public class AppointmentService implements IAppointmentService {
     public PaymentResponse RePayAppointment(Integer appointmentId, Authentication connectedUser)
             throws OperationNotPermittedException, PayPalRESTException, UserMistake, DoctorNotAvailableException {
 
+
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found"));
         User user = (User) connectedUser.getPrincipal();
@@ -193,19 +194,28 @@ public class AppointmentService implements IAppointmentService {
             throw new OperationNotPermittedException("You are not allowed to re-pay for this appointment");
         }
 
+
         if (appointment.getAppointmentDate().isBefore(LocalDate.now())) {
             throw new UserMistake("Cannot repay a past appointment");
         }
 
+
         if (appointment.getAppointmentStatus().equals(AppointmentStatus.BOOKED)) {
             throw new UserMistake("Appointment is already paid");
         }
-        if(appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(appointment.getDoctor().getId(),appointment.getTimeFrame(),appointment.getAppointmentDate(),AppointmentStatus.BOOKED)>=3){
+
+
+        if (appointmentRepository.countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(
+                appointment.getDoctor().getId(), appointment.getTimeFrame(),
+                appointment.getAppointmentDate(), AppointmentStatus.BOOKED) >= 3) {
             throw new DoctorNotAvailableException("Please update the appointment date and timeframe");
         }
 
+
         Customer customer = customerRepository.findByUser_Id(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+
         BigDecimal adjustedPrice = appointment.getService().getPrice().subtract(customer.getCustomer_balance());
         if (adjustedPrice.compareTo(BigDecimal.ZERO) < 0) {
             adjustedPrice = BigDecimal.ZERO;
@@ -214,15 +224,17 @@ public class AppointmentService implements IAppointmentService {
         appointment.setAppointmentPrice(adjustedPrice);
         appointmentRepository.save(appointment);
 
-        if (appointment.getAppointmentPrice().equals(BigDecimal.ZERO)) {
+
+        if (appointment.getAppointmentPrice().compareTo(BigDecimal.ZERO) == 0) {
             customer.setCustomer_balance(customer.getCustomer_balance().subtract(appointment.getService().getPrice()));
             customerRepository.save(customer);
+            appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
+            appointmentRepository.save(appointment);
             return PaymentResponse.builder().msg("Appointment booked successfully").build();
         } else {
             return handlePayment(appointment);
         }
     }
-
     private PaymentResponse handlePayment(Appointment appointment) throws PayPalRESTException {
         try {
             Payment payment = payPalService.createPayment(

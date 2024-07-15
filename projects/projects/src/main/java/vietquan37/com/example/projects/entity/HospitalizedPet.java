@@ -39,4 +39,6 @@ public class HospitalizedPet {
     private boolean paid;
     @OneToOne
     private Payments payments;
+    @OneToMany(mappedBy = "hospitalizedPet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DailyNote> notes;
 }

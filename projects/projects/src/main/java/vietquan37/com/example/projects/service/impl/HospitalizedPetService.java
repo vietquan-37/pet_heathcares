@@ -18,14 +18,14 @@ import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.exception.UserMistake;
 import vietquan37.com.example.projects.mapper.HospitalizedPetMapper;
+import vietquan37.com.example.projects.payload.request.DailyNoteDTO;
 import vietquan37.com.example.projects.payload.request.HospitalizedPetDTO;
 import vietquan37.com.example.projects.payload.request.UpdatePetRecordDTO;
 import vietquan37.com.example.projects.payload.request.UpdatePetServiceDTO;
-import vietquan37.com.example.projects.payload.response.HospitalizedPetResponse;
-import vietquan37.com.example.projects.payload.response.HospitalizedServiceResponse;
-import vietquan37.com.example.projects.payload.response.PaymentResponse;
+import vietquan37.com.example.projects.payload.response.*;
 import vietquan37.com.example.projects.repository.*;
 import vietquan37.com.example.projects.service.IHospitalizedPetService;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -46,6 +46,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     private final CageRepository cageRepository;
     private final PayPalService payPalService;
     private final PaymentRepository paymentRepository;
+    private final DailyNoteRepository dailyNoteRepository;
     private static final int MAX = 5;
 
 
@@ -71,7 +72,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
     }
 
     @Override
-    public void updateServiceForPet(Integer id, UpdatePetServiceDTO dto) throws  UserMistake {
+    public void updateServiceForPet(Integer id, UpdatePetServiceDTO dto) throws UserMistake {
         var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
         List<HospitalizedPetServices> hospitalizedPetServices = new ArrayList<>();
         if (hospitalizedPet.getDischargeDate() != null) {
@@ -97,9 +98,53 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         if (hospitalizedPet.getDischargeDate() != null) {
             throw new UserMistake("Cannot delete service for pet have discharged");
         }
+        if (service.getUsageDate().isBefore(LocalDate.now())) {
+            throw new UserMistake("Cannot delete service for pet have usage");
+        }
         hospitalizedPet.setTotalPrice(hospitalizedPet.getTotalPrice().subtract(service.getService().getPrice()));
         hospitalizedPetServiceRepository.delete(service);
     }
+
+    @Override
+    public void addDailyNote(Integer id, DailyNoteDTO dto, Authentication authentication) throws OperationNotPermittedException, UserMistake {
+        var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
+        User user = ((User) authentication.getPrincipal());
+        Integer userId = hospitalizedPet.getDoctor().getUser().getId();
+        if (!Objects.equals(userId, user.getId())) {
+            throw new OperationNotPermittedException("You are not allow to update that pet care");
+        }
+        if (hospitalizedPet.getDischargeDate() != null) {
+            throw new UserMistake("Cannot update information when it have been discharged");
+        }
+        if (dailyNoteRepository.findByHospitalizedPetIdAndDate(hospitalizedPet.getId(), LocalDate.now()) != null) {
+            throw new UserMistake("already have a daily note for today");
+        }
+        DailyNote dailyNote = new DailyNote();
+        dailyNote.setHospitalizedPet(hospitalizedPet);
+        dailyNote.setNote(dto.getNote());
+        dailyNote.setDate(LocalDate.now());
+        dailyNoteRepository.save(dailyNote);
+    }
+
+    @Override
+    public void updateDailyNote(Integer id, DailyNoteDTO dto, Authentication authentication) throws OperationNotPermittedException, UserMistake {
+        var dailyNote = dailyNoteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("dailyNote not found"));
+        var hospitalizedPet = dailyNote.getHospitalizedPet();
+        User user = ((User) authentication.getPrincipal());
+        Integer userId = hospitalizedPet.getDoctor().getUser().getId();
+        if (!Objects.equals(userId, user.getId())) {
+            throw new OperationNotPermittedException("You are not allow to update that pet care");
+        }
+        if (hospitalizedPet.getDischargeDate() != null) {
+            throw new UserMistake("Cannot update information when it have been discharged");
+        }
+        if (dailyNote.getDate().isBefore(LocalDate.now())) {
+            throw new UserMistake("Cannot update note for pet have usage");
+        }
+        dailyNote.setNote(dto.getNote());
+        dailyNoteRepository.save(dailyNote);
+    }
+
 
     @Override
     public Page<HospitalizedPetResponse> getAllForDoctor(int page, Authentication authentication) {
@@ -130,6 +175,22 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         return pet.map(mapper::mapForResponse);
     }
 
+    @Override
+    public Page<DailyNoteResponse> getAllDailyNotes(Integer id, Authentication authentication, int page) throws OperationNotPermittedException {
+        var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
+        User user = ((User) authentication.getPrincipal());
+        Integer userId = hospitalizedPet.getPet().getCustomer().getUser().getId();
+        if (!Objects.equals(userId, user.getId()) && !user.getRole().equals(Role.DOCTOR)) {
+            throw new OperationNotPermittedException("You are not allow to view the note");
+        }
+        if (page < 0) {
+            page = 0;
+        }
+        Pageable pageable = PageRequest.of(page, MAX);
+        Page<DailyNote>dailyNotes=dailyNoteRepository.findAllByHospitalizedPetId(id, pageable);
+        return dailyNotes.map(mapper::mapForDailyNotes);
+    }
+
 
     @Override
     public void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException {
@@ -145,6 +206,19 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         }
         hospitalizedPet.setDeleted(true);
         repository.save(hospitalizedPet);
+    }
+
+    @Override
+    public DailyNoteResponse getDailyNoteById(Integer id, Authentication authentication) throws OperationNotPermittedException {
+        User user = ((User) authentication.getPrincipal());
+        var doctor= doctorRepository.findByUser_Id(user.getId()).orElseThrow(() -> new EntityNotFoundException("doctor not found"));
+        var dailyNote=dailyNoteRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("dailyNote not found"));
+        var doctorId= dailyNote.getHospitalizedPet().getDoctor().getId();
+        if(!Objects.equals(doctorId, doctor.getId())){
+            throw new OperationNotPermittedException("You are not allow to view the note");
+        }
+
+        return mapper.mapForDailyNotes(dailyNote);
     }
 
 

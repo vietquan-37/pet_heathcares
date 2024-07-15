@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Builder
 public class HospitalizedPetResponse {
     private Integer id;
-    private String dailyNote;
     private String diagnosis;
     private String treatment;
     private String petName;

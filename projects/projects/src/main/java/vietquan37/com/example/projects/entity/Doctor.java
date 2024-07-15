@@ -1,10 +1,7 @@
 package vietquan37.com.example.projects.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import vietquan37.com.example.projects.enumClass.WorkingDay;
 import vietquan37.com.example.projects.utils.converter.WorkingDayListConverter;
 
@@ -14,7 +11,8 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class Doctor {
     @Id

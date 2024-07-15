@@ -10,13 +10,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
 import vietquan37.com.example.projects.exception.UserMistake;
+import vietquan37.com.example.projects.payload.request.DailyNoteDTO;
 import vietquan37.com.example.projects.payload.request.HospitalizedPetDTO;
 import vietquan37.com.example.projects.payload.request.UpdatePetRecordDTO;
 import vietquan37.com.example.projects.payload.request.UpdatePetServiceDTO;
-import vietquan37.com.example.projects.payload.response.APIResponse;
-import vietquan37.com.example.projects.payload.response.HospitalizedPetResponse;
-import vietquan37.com.example.projects.payload.response.HospitalizedServiceResponse;
-import vietquan37.com.example.projects.payload.response.PaymentResponse;
+import vietquan37.com.example.projects.payload.response.*;
 import vietquan37.com.example.projects.service.IHospitalizedPetService;
 import org.springframework.data.domain.Page;
 
@@ -45,6 +43,39 @@ public class HospitalizedPetController {
                 .status(HttpStatus.OK.value())
                 .data("Service updated successfully").build());
     }
+    @PostMapping("/note/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
+    public ResponseEntity<APIResponse> addDailyNote(@PathVariable Integer id, @RequestBody @Valid DailyNoteDTO dto,Authentication authentication) throws UserMistake, OperationNotPermittedException {
+        hospitalizedPetService.addDailyNote(id,dto,authentication);
+        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.builder()
+                .status(HttpStatus.CREATED.value())
+                .data("Daily note added successfully").build());
+    }
+    @PatchMapping("/note/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR')")
+    public ResponseEntity<APIResponse> updateDailyNote(@PathVariable Integer id, @RequestBody @Valid DailyNoteDTO dto,Authentication authentication) throws UserMistake, OperationNotPermittedException {
+        hospitalizedPetService.updateDailyNote(id,dto,authentication);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data("Daily note updated successfully").build());
+    }
+    @GetMapping("/notes/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR','USER')")
+    public ResponseEntity<APIResponse> getAllDailyNoteById(@PathVariable Integer id,Authentication authentication,@RequestParam(defaultValue = "0") int page) throws OperationNotPermittedException {
+        Page<DailyNoteResponse> responses = hospitalizedPetService.getAllDailyNotes(id,authentication,page);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(responses).build());
+    }
+    @GetMapping("/note/{id}")
+    @PreAuthorize("hasAnyRole('DOCTOR','USER')")
+    public ResponseEntity<APIResponse> getDailyNoteById(@PathVariable Integer id,Authentication authentication) throws OperationNotPermittedException {
+      var responses = hospitalizedPetService.getDailyNoteById(id,authentication);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
+                .status(HttpStatus.OK.value())
+                .data(responses).build());
+    }
+
 
     @DeleteMapping("/deleteService/{id}")
     @PreAuthorize("hasAnyRole('STAFF')")
