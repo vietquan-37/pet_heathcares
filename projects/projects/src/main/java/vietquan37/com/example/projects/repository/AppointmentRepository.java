@@ -21,7 +21,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     Optional<Appointment> findByIdAndDeletedIsFalse(Integer id);
     Optional<Appointment> findByPaymentsPaymentId(String id);
     Page<Appointment> findAllByCustomerIdAndDeletedIsFalse(Integer customerId, Pageable pageable);
-    Page<Appointment> findAllByDoctorIdAndDeletedIsFalse(Integer customerId, Pageable pageable);
+    Page<Appointment> findAllByDoctorIdAndDeletedIsFalseAndAppointmentStatus(Integer customerId, Pageable pageable,AppointmentStatus status);
     Page<Appointment> findAllByDeletedIsFalse( Pageable pageable);
     int countAppointmentByPetIdAndAppointmentDateAfter(Integer petId, LocalDate appointmentDate);
     int countAppointmentByDoctorIdAndTimeFrameAndAppointmentDateAndAppointmentStatus(Integer doctorId, TimeFrame timeFrame, LocalDate date, AppointmentStatus statuses);

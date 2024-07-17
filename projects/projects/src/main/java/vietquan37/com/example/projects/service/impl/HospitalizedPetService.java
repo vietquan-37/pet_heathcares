@@ -139,7 +139,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             throw new UserMistake("Cannot update information when it have been discharged");
         }
         if (dailyNote.getDate().isBefore(LocalDate.now())) {
-            throw new UserMistake("Cannot update note for pet have usage");
+            throw new UserMistake("Cannot update note in the past");
         }
         dailyNote.setNote(dto.getNote());
         dailyNoteRepository.save(dailyNote);
@@ -193,10 +193,13 @@ public class HospitalizedPetService implements IHospitalizedPetService {
 
 
     @Override
-    public void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException {
+    public void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException, UserMistake {
         var hospitalizedPet = repository.findByIdAndDeletedIsFalse(id).orElseThrow(() -> new EntityNotFoundException("pet care not found"));
         if (hospitalizedPet.getDischargeDate() != null) {
             throw new OperationNotPermittedException("Cannot delete information when it have been discharged");
+        }
+        if(!hospitalizedPet.getAdmissionDate().isEqual(LocalDate.now())) {
+            throw new UserMistake("Cannot delete the pet care that not today date");
         }
         var cage = hospitalizedPet.getCage();
         int currentOccupancy = repository.countHospitalizedPetByCageIdAndDischargeDateAndDeletedIsFalse(cage.getId(), null);

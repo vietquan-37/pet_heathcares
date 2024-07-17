@@ -108,7 +108,7 @@ public class AppointmentService implements IAppointmentService {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<Appointment> appointments = appointmentRepository.findAllByDoctorIdAndDeletedIsFalse(doctor.getId(), pageable);
+        Page<Appointment> appointments = appointmentRepository.findAllByDoctorIdAndDeletedIsFalseAndAppointmentStatus(doctor.getId(), pageable,AppointmentStatus.BOOKED);
         return appointments.map(mapper::mapAppointmentResponseForUser);
     }
 
@@ -169,8 +169,9 @@ public class AppointmentService implements IAppointmentService {
         appointment.setRefund_payments(BigDecimal.ZERO);
         appointment.setAppointmentPrice(adjustedPrice);
         appointmentRepository.save(appointment);
-        if (appointment.getAppointmentPrice().equals(BigDecimal.ZERO)) {
-
+        if (appointment.getAppointmentPrice().compareTo(BigDecimal.ZERO) == 0) {
+            appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
+            appointmentRepository.save(appointment);
             customer.setCustomer_balance(customer.getCustomer_balance().subtract(service.getPrice()));
             customerRepository.save(customer);
             return PaymentResponse.builder().msg("Appointment booked successfully").build();
@@ -308,7 +309,7 @@ public class AppointmentService implements IAppointmentService {
             appointment.setRefund_payments(appointment.getService().getPrice().multiply(BigDecimal.valueOf(0.75)));
             customer.setCustomer_balance(customer.getCustomer_balance().add(appointment.getRefund_payments()));
         } else {
-            appointment.setRefund_payments(BigDecimal.ZERO);
+            appointment.setRefund_payments(appointment.getService().getPrice().multiply(BigDecimal.valueOf(0.50)));
             customer.setCustomer_balance(customer.getCustomer_balance().add(appointment.getRefund_payments()));
 
         }

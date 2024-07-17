@@ -19,7 +19,6 @@ public class HospitalizedPet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String dailyNote;
     private String diagnosis;
     private String treatment;
     @ManyToOne

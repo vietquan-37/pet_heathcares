@@ -8,7 +8,7 @@ import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.payload.request.HospitalizedPetDTO;
 import vietquan37.com.example.projects.payload.request.UpdatePetRecordDTO;
 import vietquan37.com.example.projects.payload.response.DailyNoteResponse;
-import vietquan37.com.example.projects.payload.response.DashboardResponse;
+
 import vietquan37.com.example.projects.payload.response.HospitalizedPetResponse;
 import vietquan37.com.example.projects.payload.response.HospitalizedServiceResponse;
 

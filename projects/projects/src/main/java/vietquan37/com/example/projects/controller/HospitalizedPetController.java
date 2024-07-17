@@ -115,7 +115,7 @@ public class HospitalizedPetController {
 
     @PutMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('STAFF')")
-    public ResponseEntity<APIResponse> deleteHospitalizedPet(@PathVariable Integer id) throws OperationNotPermittedException {
+    public ResponseEntity<APIResponse> deleteHospitalizedPet(@PathVariable Integer id) throws OperationNotPermittedException, UserMistake {
         hospitalizedPetService.deleteHospitalizedPet(id);
         return ResponseEntity.status(HttpStatus.OK).body(APIResponse.builder()
                 .status(HttpStatus.OK.value())

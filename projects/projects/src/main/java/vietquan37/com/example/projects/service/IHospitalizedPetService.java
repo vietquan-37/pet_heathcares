@@ -30,7 +30,7 @@ public interface IHospitalizedPetService {
     PaymentResponse payHospitalizedFee(Integer id,Authentication authentication) throws OperationNotPermittedException, PayPalRESTException, UserMistake;
     List<HospitalizedPetResponse> getAllHospitalizedPetByPetId(Authentication authentication, Integer id) throws OperationNotPermittedException;
     void dischargeHospitalizedPet(Integer id,Authentication authentication) throws OperationNotPermittedException, UserMistake;
-    void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException;
+    void deleteHospitalizedPet(Integer id) throws OperationNotPermittedException, UserMistake;
     DailyNoteResponse getDailyNoteById(Integer id,Authentication authentication) throws OperationNotPermittedException;
 
 }
