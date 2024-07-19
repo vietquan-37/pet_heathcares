@@ -1,6 +1,4 @@
 package vietquan37.com.example.projects.config;
-
-
 import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;

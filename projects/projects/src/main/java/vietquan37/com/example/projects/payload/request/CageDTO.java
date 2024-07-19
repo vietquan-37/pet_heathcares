@@ -16,7 +16,7 @@ public class CageDTO {
     @NotNull
     private CageStatus cageStatus;
     @NotNull
-    @Min(value = 2)
+    @Min(value = 1)
     @Max(value = 5)
     private int capacity;
 }

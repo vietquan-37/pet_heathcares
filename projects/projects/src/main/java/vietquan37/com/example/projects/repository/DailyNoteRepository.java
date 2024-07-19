@@ -12,5 +12,5 @@ import java.time.LocalDate;
 public interface DailyNoteRepository extends JpaRepository<DailyNote, Integer> {
     DailyNote findByHospitalizedPetIdAndDate(Integer id,LocalDate date);
 
-    Page<DailyNote> findAllByHospitalizedPetId(Integer id,Pageable pageable);
+    Page<DailyNote> findAllByHospitalizedPetIdOrderByDateDesc(Integer id,Pageable pageable);
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import vietquan37.com.example.projects.config.PayPalService;
 import vietquan37.com.example.projects.entity.*;
 import vietquan37.com.example.projects.enumClass.CageStatus;
+import vietquan37.com.example.projects.enumClass.PetStatus;
 import vietquan37.com.example.projects.enumClass.Role;
 import vietquan37.com.example.projects.enumClass.ServiceTypes;
 import vietquan37.com.example.projects.exception.OperationNotPermittedException;
@@ -187,7 +188,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<DailyNote>dailyNotes=dailyNoteRepository.findAllByHospitalizedPetId(id, pageable);
+        Page<DailyNote>dailyNotes=dailyNoteRepository.findAllByHospitalizedPetIdOrderByDateDesc(id, pageable);
         return dailyNotes.map(mapper::mapForDailyNotes);
     }
 
@@ -244,7 +245,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             page = 0;
         }
         Pageable pageable = PageRequest.of(page, MAX);
-        Page<HospitalizedPetServices> services = hospitalizedPetServiceRepository.findAllByHospitalizedPetId(id, pageable);
+        Page<HospitalizedPetServices> services = hospitalizedPetServiceRepository.findAllByHospitalizedPetIdOrderByUsageDateDesc(id, pageable);
         return services.map(mapper::mapForService);
     }
 
@@ -305,7 +306,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
             HospitalizedPetServices hospitalizedService = new HospitalizedPetServices();
             hospitalizedService.setHospitalizedPet(hospitalizedPet);
             hospitalizedService.setService(service);
-            hospitalizedService.setUsageDate(usageDate);  // Set the usage date
+            hospitalizedService.setUsageDate(usageDate);
             hospitalizedPetServiceRepository.save(hospitalizedService);
             hospitalizedPet.setTotalPrice(hospitalizedPet.getTotalPrice().add(service.getPrice()));
         }
@@ -317,6 +318,7 @@ public class HospitalizedPetService implements IHospitalizedPetService {
         }
 
         hospitalizedPet.setDischargeDate(dischargeDate);
+        hospitalizedPet.setStatus(PetStatus.RECOVERED);
         if (hospitalizedPet.getDischargeDate().equals(hospitalizedPet.getAdmissionDate())) {
             throw new UserMistake("Cannot discharge this pet");
         }
